@@ -1,3 +1,3 @@
-export const createStatisticTemplate = () => (
-  '<p>130 291 movies inside</p>'
+export const createStatisticTemplate = (count) => (
+  `<p>${count} movies inside</p>`
 );
