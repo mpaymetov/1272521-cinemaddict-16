@@ -15,6 +15,15 @@ export const getRandomFromArray = (array) => {
   return array[randomIndex];
 };
 
+export const getRandomArray = (MIN_COUNT, MAX_COUNT, arrayFrom) => {
+  const randomCount = getRandomInteger(MIN_COUNT, MAX_COUNT);
+  const result = [];
+  for (let i = 0; i < randomCount; i++) {
+    result.push(getRandomFromArray(arrayFrom));
+  }
+  return result;
+};
+
 export const capitalizeFirstLetter = (str) => (str[0].toUpperCase() + str.slice(1));
 
 export const getReleaseDate = (date) => dayjs(date).format('D MMMM YYYY');

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInteger, getRandomFromArray} from '../utils';
+import {getRandomInteger, getRandomFromArray, getRandomArray} from '../utils';
 
 const generateTitle = () => {
   const titles = [
@@ -86,8 +86,9 @@ const generateComment = () => {
 };
 
 const generateComments = () => {
+  const MIN_COMMENT_COUNT = 0;
   const MAX_COMMENT_COUNT = 5;
-  const commentCount = getRandomInteger(0, MAX_COMMENT_COUNT);
+  const commentCount = getRandomInteger(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT);
   const comments = [];
   for (let i = 0; i < commentCount; i++) {
     comments.push(generateComment());
@@ -96,7 +97,7 @@ const generateComments = () => {
 };
 
 const generateGenres = () => {
-  const genresArr = [
+  const genres = [
     'Musical',
     'Western',
     'Drama',
@@ -104,16 +105,10 @@ const generateGenres = () => {
     'Cartoon',
     'Mystery',
   ];
-
   const MIN_GENRES_COUNT = 1;
   const MAX_GENRES_COUNT = 3;
-  const randomWritersCount = getRandomInteger(MIN_GENRES_COUNT, MAX_GENRES_COUNT);
-  const genres = [];
-  for (let i = 0; i < randomWritersCount; i++) {
-    genres.push(getRandomFromArray(genresArr));
-  }
 
-  return genres;
+  return getRandomArray(MIN_GENRES_COUNT, MAX_GENRES_COUNT, genres);
 };
 
 const generateDuration = () => {
@@ -131,9 +126,7 @@ const generateRating = () => (
 const generateRelease = () => {
   const maxSecondsGap = 1577836800; // 50 лет
   const secondsGap = getRandomInteger(0, maxSecondsGap);
-  const date = dayjs('1920-01-01T16:00:00.000Z').add(secondsGap, 'second').toDate();
-
-  return date;
+  return dayjs('1920-01-01T16:00:00.000Z').add(secondsGap, 'second').toDate();
 };
 
 const generateCountry = () => {
@@ -173,16 +166,10 @@ const generateWriters = () => {
     'Lindsley Parsons',
     'Will Beale',
   ];
-
   const MIN_WRITERS_COUNT = 1;
   const MAX_WRITERS_COUNT = 3;
-  const randomWritersCount = getRandomInteger(MIN_WRITERS_COUNT, MAX_WRITERS_COUNT);
-  const writers = [];
-  for (let i = 0; i < randomWritersCount; i++) {
-    writers.push(getRandomFromArray(writerArr));
-  }
 
-  return writers;
+  return getRandomArray(MIN_WRITERS_COUNT, MAX_WRITERS_COUNT, writerArr);
 };
 
 const generateActors = () => {
@@ -195,16 +182,10 @@ const generateActors = () => {
     'Lane Chandler',
     'Frank Sinatra',
   ];
-
   const MIN_ACTORS_COUNT = 2;
   const MAX_ACTORS_COUNT = 4;
-  const randomWritersCount = getRandomInteger(MIN_ACTORS_COUNT, MAX_ACTORS_COUNT);
-  const actors = [];
-  for (let i = 0; i < randomWritersCount; i++) {
-    actors.push(getRandomFromArray(actorArr));
-  }
 
-  return actors;
+  return getRandomArray(MIN_ACTORS_COUNT, MAX_ACTORS_COUNT, actorArr);
 };
 
 const title = generateTitle();
