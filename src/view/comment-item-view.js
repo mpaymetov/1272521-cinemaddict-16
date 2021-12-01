@@ -1,6 +1,7 @@
 import {getCommentDate} from '../utils';
+import {createElement} from '../render';
 
-export const createCommentItemTemplate = (comment) => {
+const createCommentItemTemplate = (comment) => {
   const {author, date, message, emotion} = comment;
   const commentDate = getCommentDate(date);
 
@@ -18,3 +19,28 @@ export const createCommentItemTemplate = (comment) => {
     </div>
   </li>`;
 };
+
+export default class CommentItemView {
+  #element = null;
+  #comment = null;
+
+  constructor(comment) {
+    this.#comment = comment;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createCommentItemTemplate(this.#comment);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

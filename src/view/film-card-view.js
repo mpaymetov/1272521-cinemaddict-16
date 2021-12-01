@@ -1,6 +1,7 @@
 import {getReleaseYear} from '../utils';
+import {createElement} from '../render';
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {title, totalRating, release, duration, genres, poster, description, comments, isAddedToWatchList, isWatched, isFavorite} = film;
   const year = getReleaseYear(release);
   const watchListAddedClassName = (isAddedToWatchList) ? 'film-card__controls-item--active' : '';
@@ -27,3 +28,28 @@ export const createFilmCardTemplate = (film) => {
     </div>
   </article>`;
 };
+
+export default class FilmCardView {
+  #element = null;
+  #film = null;
+
+  constructor(film) {
+    this.#film = film;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmCardTemplate(this.#film);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

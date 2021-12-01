@@ -1,16 +1,13 @@
 import {createElement} from '../render.js';
 
-const createStatisticTemplate = (count) => (
-  `<p>${count} movies inside</p>`
+const createNoFilmTemplate = () => (
+  `<section class="films-list">
+    <h2 class="films-list__title">There are no movies in our database</h2>
+  </section>`
 );
 
-export default class StatisticView {
+export default class NoFilmView {
   #element = null;
-  #count = null;
-
-  constructor(count) {
-    this.#count = count;
-  }
 
   get element() {
     if (!this.#element) {
@@ -21,7 +18,7 @@ export default class StatisticView {
   }
 
   get template() {
-    return createStatisticTemplate(this.#count);
+    return createNoFilmTemplate();
   }
 
   removeElement() {

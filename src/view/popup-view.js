@@ -1,6 +1,7 @@
 import {getReleaseDate} from '../utils';
+import {createElement} from '../render';
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {title, originalTitle, totalRating, release, duration, genres, poster, director, country, description, ageRating, writers, actors, isAddedToWatchList, isWatched, isFavorite} = film;
   const releaseDate = getReleaseDate(release);
   const writersStr = writers.join(', ');
@@ -87,3 +88,28 @@ export const createPopupTemplate = (film) => {
     </form>
   </section>`;
 };
+
+export default class PopupView {
+  #element = null;
+  #film = null;
+
+  constructor(film) {
+    this.#film = film;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPopupTemplate(this.#film);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
