@@ -1,5 +1,5 @@
-import {capitalizeFirstLetter} from '../utils';
-import {createElement} from '../render';
+import {capitalizeFirstLetter} from '../utils/film';
+import AbstractView from './abstract-view.js';
 
 const createFilterItemTemplate = (filter, isFirst, isActive) => {
   const {name, count} = filter;
@@ -22,27 +22,15 @@ const createSiteMenuTemplate = (filterItems) => {
   </nav>`;
 };
 
-export default class SiteMenuView {
-  #element = null;
+export default class SiteMenuView extends AbstractView {
   #filter = null;
 
   constructor(filter) {
+    super();
     this.#filter = filter;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createSiteMenuTemplate(this.#filter);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
