@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './utils/render.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 import UserRankView from './view/user-rank-view';
 import SiteMenuView from './view/site-menu-view';
 import SortView from './view/sort-view';
@@ -35,6 +35,19 @@ const renderFilm = (listElement, film) => {
   const filmComponent = new FilmCardView(film);
   const filmPopupComponent = new PopupView(film);
 
+  const hidePopup = () => {
+    siteBodyElement.classList.remove('hide-overflow');
+    remove(filmPopupComponent);
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      hidePopup();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   const showPopup = () => {
     const commentBlockElement = new CommentBlockView(film.comments.length);
     const popupBottom = filmPopupComponent.element.querySelector('.film-details__bottom-container');
@@ -48,30 +61,17 @@ const renderFilm = (listElement, film) => {
 
     siteBodyElement.classList.add('hide-overflow');
 
-    siteBodyElement.appendChild(filmPopupComponent.element);
-  };
-
-  const hidePopup = () => {
-    siteBodyElement.classList.remove('hide-overflow');
-    siteBodyElement.removeChild(filmPopupComponent.element);
-  };
-
-  const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
+    filmPopupComponent.setCloseClickHandler(() => {
       hidePopup();
       document.removeEventListener('keydown', onEscKeyDown);
-    }
+    });
+
+    render(siteBodyElement, filmPopupComponent, RenderPosition.BEFOREEND);
   };
 
   filmComponent.setClickHandler(() => {
     showPopup();
     document.addEventListener('keydown', onEscKeyDown);
-  });
-
-  filmPopupComponent.setCloseClickHandler(() => {
-    hidePopup();
-    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(listElement, filmComponent, RenderPosition.BEFOREEND);
@@ -99,8 +99,6 @@ const renderBoard = (mainElement, filmList) => {
       const moreButtonComponent = new MoreButtonView();
       render(filmListMain, moreButtonComponent, RenderPosition.BEFOREEND);
 
-      const showMoreButton = filmListMain.querySelector('.films-list__show-more');
-
       moreButtonComponent.setClickHandler(() => {
         filmList
           .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
@@ -109,7 +107,7 @@ const renderBoard = (mainElement, filmList) => {
         renderedFilmCount += FILM_COUNT_PER_STEP;
 
         if (renderedFilmCount >= filmList.length) {
-          showMoreButton.remove();
+          remove(moreButtonComponent);
         }
       });
     }
