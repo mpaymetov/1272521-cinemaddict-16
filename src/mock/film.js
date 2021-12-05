@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInteger, getRandomFromArray, getRandomArray} from '../utils';
+import {getRandomInteger, getRandomFromArray, getRandomArray} from '../utils/common';
 
 const generateTitle = () => {
   const titles = [
