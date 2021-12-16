@@ -3,6 +3,7 @@ import FilmBlockView from '../view/film-block-view';
 import NoFilmView from '../view/no-film-view.js';
 import {render, RenderPosition} from '../utils/render';
 import FilmListPresenter from './film-list-presenter';
+import PopupPresenter from './popup-presenter';
 
 export default class FilmBlockPresenter {
   #popupComponent = null;
@@ -12,11 +13,21 @@ export default class FilmBlockPresenter {
   #noFilmComponent = new NoFilmView();
   #filmBlockElement = new FilmBlockView();
 
+  #mainFilmList = null;
+  #topRatedFilmList = null;
+  #mostCommentedFilmList = null;
+
   #films = [];
 
-  constructor(popupComponent, blockContainer) {
-    this.#popupComponent = popupComponent;
+  constructor(popupContainer, blockContainer) {
     this.#blockContainer = blockContainer;
+    this.#popupComponent = new PopupPresenter(popupContainer);
+
+    render(this.#blockContainer, this.#filmBlockElement, RenderPosition.BEFOREEND);
+
+    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming');
+    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true);
+    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true);
   }
 
   init = (films) => {
@@ -26,7 +37,7 @@ export default class FilmBlockPresenter {
   }
 
   #renderSort = () => {
-    render(this.#filmBlockElement, this.#sortComponent, RenderPosition.BEFOREEND);
+    render(this.#filmBlockElement, this.#sortComponent, RenderPosition.BEFOREBEGIN);
   }
 
   #renderNoFilms = () => {
@@ -34,8 +45,6 @@ export default class FilmBlockPresenter {
   }
 
   #renderFilmBoard = () => {
-    render(this.#blockContainer, this.#filmBlockElement, RenderPosition.BEFOREEND);
-
     if (this.#films.length === 0) {
       this.#renderNoFilms();
       return;
@@ -43,12 +52,8 @@ export default class FilmBlockPresenter {
 
     this.#renderSort();
 
-    const mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming');
-    const topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true);
-    const mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true);
-
-    mainFilmList.init(this.#films);
-    topRatedFilmList.init(this.#films);
-    mostCommentedFilmList.init(this.#films);
+    this.#mainFilmList.init(this.#films);
+    this.#topRatedFilmList.init(this.#films);
+    this.#mostCommentedFilmList.init(this.#films);
   }
 }

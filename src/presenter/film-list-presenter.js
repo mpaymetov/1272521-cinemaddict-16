@@ -1,5 +1,6 @@
 import FilmListView from '../view/film-list-view';
 import {remove, render, RenderPosition} from '../utils/render';
+import {updateItem} from '../utils/common';
 import {FILM_COUNT_PER_STEP, LIST_EXTRA_FILM_COUNT} from '../const';
 import MoreButtonView from '../view/more-button-view';
 import FilmCardPresenter from './film-card-presenter';
@@ -16,6 +17,7 @@ export default class FilmListPresenter {
   #moreButtonComponent = new MoreButtonView();
 
   #films = [];
+  #filmPresenter = new Map();
 
   constructor(filmBlockElement, popupComponent, title, isExtra = false) {
     this.#popupComponent = popupComponent;
@@ -31,9 +33,15 @@ export default class FilmListPresenter {
     this.#renderFilmList();
   }
 
+  #handleFilmChange = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+    this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+  }
+
   #renderFilm = (film) => {
-    const filmComponent = new FilmCardPresenter(this.#filmListContainer, this.#popupComponent);
-    filmComponent.init(film);
+    const filmCardPresenter = new FilmCardPresenter(this.#filmListContainer, this.#popupComponent, this.#handleFilmChange);
+    filmCardPresenter.init(film);
+    this.#filmPresenter.set(film.id, filmCardPresenter);
   }
 
   #renderFilms = (from, to) => {
@@ -56,6 +64,13 @@ export default class FilmListPresenter {
     this.#renderedFilmCount = this.#filmCountPerStep;
     render(this.#filmListElement, this.#moreButtonComponent, RenderPosition.BEFOREEND);
     this.#moreButtonComponent.setClickHandler(this.#handleMoreButtonClick);
+  }
+
+  #clearFilmList = () => {
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    this.#filmCountPerStep = (this.#isFilmListExtra) ? LIST_EXTRA_FILM_COUNT : FILM_COUNT_PER_STEP;
+    remove(this.#moreButtonComponent);
   }
 
   #renderFilmList = () => {

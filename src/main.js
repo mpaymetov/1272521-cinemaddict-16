@@ -3,7 +3,6 @@ import UserRankView from './view/user-rank-view';
 import SiteMenuView from './view/site-menu-view';
 import StatisticView from './view/statistic-view';
 import FilmBlockPresenter from './presenter/film-block-presenter';
-import PopupPresenter from './presenter/popup-presenter';
 import {generateFilm} from './mock/film.js';
 import {generateFilter} from './mock/filter';
 import {FILM_COUNT} from './const';
@@ -21,7 +20,5 @@ render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 const footerStatisticsElement = siteBodyElement.querySelector('.footer__statistics');
 render(footerStatisticsElement, new StatisticView(films.length), RenderPosition.BEFOREEND);
 
-const popupComponent = new PopupPresenter(siteBodyElement);
-
-const filmBlockPresenter = new FilmBlockPresenter(popupComponent, siteMainElement);
+const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement);
 filmBlockPresenter.init(films);
