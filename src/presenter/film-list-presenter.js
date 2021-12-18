@@ -16,15 +16,18 @@ export default class FilmListPresenter {
   #renderedFilmCount = null;
   #moreButtonComponent = new MoreButtonView();
 
+  #changeData = null;
+
   #films = [];
   #filmPresenter = new Map();
 
-  constructor(filmBlockElement, popupComponent, title, isExtra = false) {
+  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData) {
     this.#popupComponent = popupComponent;
     this.#filmBlockElement = filmBlockElement;
     this.#filmListTitle = title;
     this.#isFilmListExtra = isExtra;
     this.#filmCountPerStep = (this.#isFilmListExtra) ? LIST_EXTRA_FILM_COUNT : FILM_COUNT_PER_STEP;
+    this.#changeData = changeData;
   }
 
   init = (films) => {
@@ -33,13 +36,15 @@ export default class FilmListPresenter {
     this.#renderFilmList();
   }
 
-  #handleFilmChange = (updatedFilm) => {
+  updateFilm = (updatedFilm) => {
     this.#films = updateItem(this.#films, updatedFilm);
-    this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+    if (this.#filmPresenter.get(updatedFilm.id)) {
+      this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
+    }
   }
 
   #renderFilm = (film) => {
-    const filmCardPresenter = new FilmCardPresenter(this.#filmListContainer, this.#popupComponent, this.#handleFilmChange);
+    const filmCardPresenter = new FilmCardPresenter(this.#filmListContainer, this.#popupComponent, this.#changeData);
     filmCardPresenter.init(film);
     this.#filmPresenter.set(film.id, filmCardPresenter);
   }

@@ -8,14 +8,21 @@ export default class PopupPresenter {
   #popupContainer = null;
   #filmPopupComponent = null;
 
-  constructor(popupContainer) {
+  #changeData = null;
+
+  constructor(popupContainer, changeData) {
     this.#popupContainer = popupContainer;
+    this.#changeData = changeData;
   }
 
   init = (film) => {
     this.#film = film;
     const prevFilmPopupComponent = this.#filmPopupComponent;
     this.#filmPopupComponent = new PopupView(this.#film);
+
+    this.#filmPopupComponent.setWatchlistAddedClickHandler(this.#handleWatchlistAddedClick);
+    this.#filmPopupComponent.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#filmPopupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     if (prevFilmPopupComponent === null) {
       this.#show();
@@ -31,9 +38,25 @@ export default class PopupPresenter {
     remove(prevFilmPopupComponent);
   }
 
+  isShow = () => (
+    Boolean(this.#filmPopupComponent)
+  )
+
   #destroy = () => {
     remove(this.#filmPopupComponent);
     this.#filmPopupComponent = null;
+  }
+
+  #handleWatchlistAddedClick = () => {
+    this.#changeData({...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList});
+  }
+
+  #handleWatchedClick = () => {
+    this.#changeData({...this.#film, isWatched: !this.#film.isWatched});
+  }
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#film, isFavorite: !this.#film.isFavorite});
   }
 
   #handleOnEscKeyDown = (evt) => {

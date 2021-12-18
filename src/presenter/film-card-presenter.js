@@ -25,19 +25,14 @@ export default class FilmCardPresenter {
 
     if (prevFilmCardComponent === null) {
       render(this.#filmContainer, this.#filmCardComponent, RenderPosition.BEFOREEND);
-
-      this.#filmCardComponent.setClickHandler(() => {
-        this.#popupComponent.init(this.#film);
-      });
-
-      return;
-    }
-
-    if (this.#filmContainer.contains(prevFilmCardComponent.element)) {
+    } else if (this.#filmContainer.contains(prevFilmCardComponent.element)) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
+      remove(prevFilmCardComponent);
     }
 
-    remove(prevFilmCardComponent);
+    this.#filmCardComponent.setClickHandler(() => {
+      this.#popupComponent.init(this.#film);
+    });
   }
 
   #handleWatchlistAddedClick = () => {

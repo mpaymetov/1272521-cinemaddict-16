@@ -4,6 +4,7 @@ import NoFilmView from '../view/no-film-view.js';
 import {render, RenderPosition} from '../utils/render';
 import FilmListPresenter from './film-list-presenter';
 import PopupPresenter from './popup-presenter';
+import {updateItem} from '../utils/common';
 
 export default class FilmBlockPresenter {
   #popupComponent = null;
@@ -21,13 +22,13 @@ export default class FilmBlockPresenter {
 
   constructor(popupContainer, blockContainer) {
     this.#blockContainer = blockContainer;
-    this.#popupComponent = new PopupPresenter(popupContainer);
+    this.#popupComponent = new PopupPresenter(popupContainer, this.#handleFilmChange);
 
     render(this.#blockContainer, this.#filmBlockElement, RenderPosition.BEFOREEND);
 
-    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming');
-    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true);
-    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true);
+    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false, this.#handleFilmChange);
+    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true, this.#handleFilmChange);
+    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true, this.#handleFilmChange);
   }
 
   init = (films) => {
@@ -42,6 +43,16 @@ export default class FilmBlockPresenter {
 
   #renderNoFilms = () => {
     render(this.#blockContainer, this.#noFilmComponent, RenderPosition.BEFOREEND);
+  }
+
+  #handleFilmChange = (updatedFilm) => {
+    this.#films = updateItem(this.#films, updatedFilm);
+    if (this.#popupComponent.isShow()) {
+      this.#popupComponent.init(updatedFilm);
+    }
+    this.#mainFilmList.updateFilm(updatedFilm);
+    this.#topRatedFilmList.updateFilm(updatedFilm);
+    this.#mostCommentedFilmList.updateFilm(updatedFilm);
   }
 
   #renderFilmBoard = () => {
