@@ -42,6 +42,10 @@ export default class PopupPresenter {
     Boolean(this.#filmPopupComponent)
   )
 
+  getId = () => (
+    this.#film.id
+  )
+
   #destroy = () => {
     remove(this.#filmPopupComponent);
     this.#filmPopupComponent = null;

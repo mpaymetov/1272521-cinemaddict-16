@@ -47,7 +47,7 @@ export default class FilmBlockPresenter {
 
   #handleFilmChange = (updatedFilm) => {
     this.#films = updateItem(this.#films, updatedFilm);
-    if (this.#popupComponent.isShow()) {
+    if (this.#popupComponent.isShow() && (updatedFilm.id === this.#popupComponent.getId())) {
       this.#popupComponent.init(updatedFilm);
     }
     this.#mainFilmList.updateFilm(updatedFilm);
