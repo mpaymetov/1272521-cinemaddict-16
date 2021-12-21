@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomInteger, getRandomFromArray, getRandomArray} from '../utils/common';
 
 const generateTitle = () => {
@@ -192,6 +193,7 @@ const title = generateTitle();
 
 export const generateFilm = () => (
   {
+    id: nanoid(),
     title,
     originalTitle: title,
     poster: generatePoster(),
