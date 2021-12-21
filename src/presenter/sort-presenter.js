@@ -4,10 +4,12 @@ import {remove, render, RenderPosition, replace} from '../utils/render';
 export default class SortPresenter {
   #sortComponent = null;
   #sortType = null;
-  #filmBlockElement = null;
+  #sortContainer = null;
+  #changeData = null;
 
-  constructor(filmBlockElement) {
-    this.#filmBlockElement = filmBlockElement;
+  constructor(sortContainer, changeData) {
+    this.#sortContainer = sortContainer;
+    this.#changeData = changeData;
   }
 
   init = (sortType) => {
@@ -16,19 +18,25 @@ export default class SortPresenter {
     const prevSortComponent = this.#sortComponent;
     this.#sortComponent = new SortView(this.#sortType);
 
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortChangeClick);
+
     if (prevSortComponent === null) {
-      render(this.#filmBlockElement, this.#sortComponent, RenderPosition.BEFOREBEGIN);
+      render(this.#sortContainer, this.#sortComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    if (this.#filmBlockElement.contains(prevSortComponent.element)) {
+    if (this.#sortContainer.contains(prevSortComponent.element)) {
       replace(this.#sortComponent, prevSortComponent);
     }
 
     remove(prevSortComponent);
   }
 
-  #destroy = () => {
+  #handleSortChangeClick = (sortType) => {
+    this.#changeData(sortType);
+  }
+
+  destroy = () => {
     remove(this.#sortComponent);
   }
 }
