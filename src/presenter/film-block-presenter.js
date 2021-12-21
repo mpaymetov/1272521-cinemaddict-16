@@ -5,6 +5,7 @@ import {render, RenderPosition} from '../utils/render';
 import FilmListPresenter from './film-list-presenter';
 import PopupPresenter from './popup-presenter';
 import {updateItem} from '../utils/common';
+import {SortType} from '../const';
 
 export default class FilmBlockPresenter {
   #popupComponent = null;
@@ -18,6 +19,8 @@ export default class FilmBlockPresenter {
   #topRatedFilmList = null;
   #mostCommentedFilmList = null;
 
+  #mainListSortType = SortType.DEFAULT;
+
   #films = [];
 
   constructor(popupContainer, blockContainer) {
@@ -26,9 +29,9 @@ export default class FilmBlockPresenter {
 
     render(this.#blockContainer, this.#filmBlockElement, RenderPosition.BEFOREEND);
 
-    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false, this.#handleFilmChange);
-    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true, this.#handleFilmChange);
-    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true, this.#handleFilmChange);
+    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false, this.#handleFilmChange, this.#mainListSortType);
+    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true, this.#handleFilmChange, SortType.RATING);
+    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true, this.#handleFilmChange, SortType.COMMENT);
   }
 
   init = (films) => {
@@ -37,8 +40,14 @@ export default class FilmBlockPresenter {
     this.#renderFilmBoard();
   }
 
+  #handleSortTypeChange = (sortType) => {
+    this.#mainListSortType = sortType;
+    this.#mainFilmList.changeSortType(sortType);
+  }
+
   #renderSort = () => {
     render(this.#filmBlockElement, this.#sortComponent, RenderPosition.BEFOREBEGIN);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
 
   #renderNoFilms = () => {

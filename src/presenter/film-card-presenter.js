@@ -47,7 +47,7 @@ export default class FilmCardPresenter {
     this.#changeData({...this.#film, isFavorite: !this.#film.isFavorite});
   }
 
-  #destroy = () => {
+  destroy = () => {
     remove(this.#filmCardComponent);
   }
 }
