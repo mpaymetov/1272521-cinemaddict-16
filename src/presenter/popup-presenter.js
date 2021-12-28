@@ -1,6 +1,5 @@
 import PopupView from '../view/popup-view';
 import CommentBlockView from '../view/comment-block-view';
-import CommentItemView from '../view/comment-item-view';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 
 export default class PopupPresenter {
@@ -77,15 +76,9 @@ export default class PopupPresenter {
   }
 
   #show = () => {
-    const commentBlockElement = new CommentBlockView(this.#film.comments.length);
+    const commentBlockElement = new CommentBlockView(this.#film.comments);
     const popupBottom = this.#filmPopupComponent.element.querySelector('.film-details__bottom-container');
     render(popupBottom, commentBlockElement, RenderPosition.BEFOREEND);
-
-    const popupCommentsList = commentBlockElement.element.querySelector('.film-details__comments-list');
-    this.#film.comments.forEach((comment) => {
-      const commentItemElement = new CommentItemView(comment);
-      render(popupCommentsList, commentItemElement, RenderPosition.BEFOREEND);
-    });
 
     this.#popupContainer.classList.add('hide-overflow');
 
