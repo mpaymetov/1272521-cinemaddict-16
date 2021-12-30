@@ -1,9 +1,10 @@
-import {getReleaseDate} from '../utils/film';
+import {getDurationString, getReleaseDate} from '../utils/film';
 import AbstractView from './abstract-view.js';
 
 const createPopupTemplate = (film) => {
   const {title, originalTitle, totalRating, release, duration, genres, poster, director, country, description, ageRating, writers, actors, isAddedToWatchList, isWatched, isFavorite} = film;
   const releaseDate = getReleaseDate(release);
+  const durationStr = getDurationString(duration);
   const writersStr = writers.join(', ');
   const actorsStr = actors.join(', ');
   let genresData = '';
@@ -59,7 +60,7 @@ const createPopupTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${durationStr}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

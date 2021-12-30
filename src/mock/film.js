@@ -112,13 +112,9 @@ const generateGenres = () => {
   return getRandomArray(MIN_GENRES_COUNT, MAX_GENRES_COUNT, genres);
 };
 
-const generateDuration = () => {
-  const hours = getRandomInteger();
-  const minutes = getRandomInteger(1, 59);
-  let durations = hours ? `${hours}h ` : '';
-  durations += `${minutes}m`;
-  return durations;
-};
+const generateDuration = () => (
+  getRandomInteger(30, 110)
+);
 
 const generateRating = () => (
   (getRandomInteger(0, 100) / 10).toFixed(1)

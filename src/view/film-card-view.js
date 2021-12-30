@@ -1,9 +1,10 @@
-import {getReleaseYear} from '../utils/film';
+import {getReleaseYear, getDurationString} from '../utils/film';
 import AbstractView from './abstract-view.js';
 
 const createFilmCardTemplate = (film) => {
   const {title, totalRating, release, duration, genres, poster, description, comments, isAddedToWatchList, isWatched, isFavorite} = film;
   const year = getReleaseYear(release);
+  const durationStr = getDurationString(duration);
   const watchListAddedClassName = (isAddedToWatchList) ? 'film-card__controls-item--active' : '';
   const watchedClassName = (isWatched) ? 'film-card__controls-item--active' : '';
   const favoriteClassName = (isFavorite) ? 'film-card__controls-item--active' : '';
@@ -14,7 +15,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${year}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${durationStr}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
