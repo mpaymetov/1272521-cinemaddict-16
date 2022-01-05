@@ -8,3 +8,13 @@ export const SortType = {
   RATING: 'rating',
   COMMENT: 'comment',
 };
+
+export const UserAction = {
+  UPDATE_FILM: 'UPDATE_FILM',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};

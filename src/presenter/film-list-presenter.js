@@ -1,6 +1,5 @@
 import FilmListView from '../view/film-list-view';
 import {remove, render, RenderPosition} from '../utils/render';
-import {updateItem} from '../utils/common';
 import {FILM_COUNT_PER_STEP, LIST_EXTRA_FILM_COUNT} from '../const';
 import MoreButtonView from '../view/more-button-view';
 import FilmCardPresenter from './film-card-presenter';
@@ -17,16 +16,13 @@ export default class FilmListPresenter {
   #filmCountPerStep = null;
   #renderedFilmCount = null;
   #moreButtonComponent = new MoreButtonView();
+  #filmsModel = null;
 
   #changeData = null;
-
-  #films = [];
-  #sourcedFilms = [];
   #filmPresenter = new Map();
-
   #filmsSortType = null;
 
-  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData, filmsSortType) {
+  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData, filmsSortType, filmsModel) {
     this.#popupComponent = popupComponent;
     this.#filmBlockElement = filmBlockElement;
     this.#filmListTitle = title;
@@ -34,40 +30,34 @@ export default class FilmListPresenter {
     this.#filmCountPerStep = (this.#isFilmListExtra) ? LIST_EXTRA_FILM_COUNT : FILM_COUNT_PER_STEP;
     this.#changeData = changeData;
     this.#filmsSortType = filmsSortType;
+    this.#filmsModel = filmsModel;
   }
 
-  init = (films) => {
-    this.#films = [...films];
-    this.#sourcedFilms = [...films];
+  get films() {
+    switch (this.#filmsSortType) {
+      case SortType.DATE:
+        return [...this.#filmsModel.films].sort(sortDate);
+      case SortType.RATING:
+        return [...this.#filmsModel.films].sort(sortRating);
+      case SortType.COMMENT:
+        return [...this.#filmsModel.films].sort(sortComment);
+    }
 
+    return this.#filmsModel.films;
+  }
+
+  init = () => {
     this.#filmListElement = new FilmListView(this.#filmListTitle, this.#isFilmListExtra);
     render(this.#filmBlockElement, this.#filmListElement, RenderPosition.BEFOREEND);
 
-    this.#sortFilms();
     this.#renderFilmList();
   }
 
   updateFilm = (updatedFilm) => {
-    this.#films = updateItem(this.#films, updatedFilm);
-    this.#sourcedFilms = updateItem(this.#sourcedFilms, updatedFilm);
+    //this.#films = updateItem(this.films, updatedFilm);
+    //this.#sourcedFilms = updateItem(this.#sourcedFilms, updatedFilm);
     if (this.#filmPresenter.get(updatedFilm.id)) {
       this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
-    }
-  }
-
-  #sortFilms = () => {
-    switch (this.#filmsSortType) {
-      case SortType.DATE:
-        this.#films.sort(sortDate);
-        break;
-      case SortType.RATING:
-        this.#films.sort(sortRating);
-        break;
-      case SortType.COMMENT:
-        this.#films.sort(sortComment);
-        break;
-      default:
-        this.#films = [...this.#sourcedFilms];
     }
   }
 
@@ -77,7 +67,7 @@ export default class FilmListPresenter {
     }
 
     this.#filmsSortType = sortType;
-    this.#sortFilms();
+    //this.#sortFilms();
     this.#clearFilmList();
     this.#renderFilmList();
   }
@@ -89,7 +79,7 @@ export default class FilmListPresenter {
   }
 
   #renderFilms = (from, to) => {
-    this.#films
+    this.films
       .slice(from, to)
       .forEach((film) => this.#renderFilm(film));
   }
@@ -99,7 +89,7 @@ export default class FilmListPresenter {
 
     this.#renderedFilmCount += this.#filmCountPerStep;
 
-    if (this.#renderedFilmCount >= this.#films.length) {
+    if (this.#renderedFilmCount >= this.films.length) {
       remove(this.#moreButtonComponent);
     }
   }
@@ -119,9 +109,9 @@ export default class FilmListPresenter {
 
   #renderFilmList = () => {
     this.#filmListContainer = this.#filmListElement.element.querySelector('.films-list__container');
-    this.#renderFilms(0, Math.min(this.#films.length, this.#filmCountPerStep));
+    this.#renderFilms(0, Math.min(this.films.length, this.#filmCountPerStep));
 
-    if (this.#films.length > this.#filmCountPerStep && !this.#isFilmListExtra) {
+    if (this.films.length > this.#filmCountPerStep && !this.#isFilmListExtra) {
       this.#renderMoreButton();
     }
   }

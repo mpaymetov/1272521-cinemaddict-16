@@ -1,6 +1,7 @@
 import PopupView from '../view/popup-view';
 import CommentBlockView from '../view/comment-block-view';
 import {remove, render, RenderPosition, replace} from '../utils/render';
+import {UpdateType, UserAction} from '../const';
 
 export default class PopupPresenter {
   #film = null;
@@ -51,15 +52,27 @@ export default class PopupPresenter {
   }
 
   #handleWatchlistAddedClick = () => {
-    this.#changeData({...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MAJOR,
+      {...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList}
+    );
   }
 
   #handleWatchedClick = () => {
-    this.#changeData({...this.#film, isWatched: !this.#film.isWatched});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MAJOR,
+      {...this.#film, isWatched: !this.#film.isWatched}
+    );
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#film, isFavorite: !this.#film.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MAJOR,
+      {...this.#film, isFavorite: !this.#film.isFavorite}
+    );
   }
 
   #handleOnEscKeyDown = (evt) => {

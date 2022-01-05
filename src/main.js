@@ -6,9 +6,13 @@ import FilmBlockPresenter from './presenter/film-block-presenter';
 import {generateFilm} from './mock/film.js';
 import {generateFilter} from './mock/filter';
 import {FILM_COUNT} from './const';
+import FilmsModel from './model/films-model';
 
 const films = Array.from({length: FILM_COUNT}, generateFilm);
 const filters = generateFilter(films);
+
+const filmsModel = new FilmsModel();
+filmsModel.films = films;
 
 const siteBodyElement = document.querySelector('body');
 const siteHeader = siteBodyElement.querySelector('.header');
@@ -20,5 +24,5 @@ render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 const footerStatisticsElement = siteBodyElement.querySelector('.footer__statistics');
 render(footerStatisticsElement, new StatisticView(films.length), RenderPosition.BEFOREEND);
 
-const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement);
-filmBlockPresenter.init(films);
+const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement, filmsModel);
+filmBlockPresenter.init();
