@@ -38,5 +38,6 @@ export default class SortPresenter {
 
   destroy = () => {
     remove(this.#sortComponent);
+    this.#sortComponent = null;
   }
 }

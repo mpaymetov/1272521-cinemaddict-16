@@ -7,6 +7,7 @@ import {sortDate, sortRating, sortComment} from '../utils/film';
 import {SortType} from '../const';
 
 export default class FilmListPresenter {
+  #filmsModel = null;
   #popupComponent = null;
   #filmBlockElement = null;
   #filmListTitle = null;
@@ -15,8 +16,7 @@ export default class FilmListPresenter {
   #filmListContainer = null;
   #filmCountPerStep = null;
   #renderedFilmCount = null;
-  #moreButtonComponent = new MoreButtonView();
-  #filmsModel = null;
+  #moreButtonComponent = null;
 
   #changeData = null;
   #filmPresenter = new Map();
@@ -54,8 +54,6 @@ export default class FilmListPresenter {
   }
 
   updateFilm = (updatedFilm) => {
-    //this.#films = updateItem(this.films, updatedFilm);
-    //this.#sourcedFilms = updateItem(this.#sourcedFilms, updatedFilm);
     if (this.#filmPresenter.get(updatedFilm.id)) {
       this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
     }
@@ -67,7 +65,6 @@ export default class FilmListPresenter {
     }
 
     this.#filmsSortType = sortType;
-    //this.#sortFilms();
     this.#clearFilmList();
     this.#renderFilmList();
   }
@@ -86,7 +83,6 @@ export default class FilmListPresenter {
 
   #handleMoreButtonClick = () => {
     this.#renderFilms(this.#renderedFilmCount, this.#renderedFilmCount + this.#filmCountPerStep);
-
     this.#renderedFilmCount += this.#filmCountPerStep;
 
     if (this.#renderedFilmCount >= this.films.length) {
@@ -96,6 +92,7 @@ export default class FilmListPresenter {
 
   #renderMoreButton = () => {
     this.#renderedFilmCount = this.#filmCountPerStep;
+    this.#moreButtonComponent = new MoreButtonView();
     render(this.#filmListElement, this.#moreButtonComponent, RenderPosition.BEFOREEND);
     this.#moreButtonComponent.setClickHandler(this.#handleMoreButtonClick);
   }
@@ -105,6 +102,11 @@ export default class FilmListPresenter {
     this.#filmPresenter.clear();
     this.#filmCountPerStep = (this.#isFilmListExtra) ? LIST_EXTRA_FILM_COUNT : FILM_COUNT_PER_STEP;
     remove(this.#moreButtonComponent);
+  }
+
+  destroy = () => {
+    this.#clearFilmList();
+    remove(this.#filmListElement);
   }
 
   #renderFilmList = () => {
