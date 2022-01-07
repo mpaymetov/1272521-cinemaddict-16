@@ -1,15 +1,17 @@
 import FilmBlockView from '../view/film-block-view';
-import NoFilmView from '../view/no-film-view.js';
-import {remove, render, RenderPosition} from '../utils/render';
+import NoFilmView from '../view/no-film-view';
 import FilmListPresenter from './film-list-presenter';
 import PopupPresenter from './popup-presenter';
 import SortPresenter from './sort-presenter';
-import {SortType, UserAction, UpdateType} from '../const';
+import {remove, render, RenderPosition} from '../utils/render';
+import {SortType, UserAction, UpdateType, FilterType} from '../const';
+import {filter} from '../utils/filter';
 
 export default class FilmBlockPresenter {
   #popupComponent = null;
   #blockContainer = null;
   #filmsModel = null;
+  #filterModel = null;
 
   #sortComponent = null;
   #noFilmComponent = null;
@@ -20,23 +22,31 @@ export default class FilmBlockPresenter {
   #mostCommentedFilmList = null;
 
   #mainListSortType = SortType.DEFAULT;
+  #filterType = FilterType.ALL;
 
-  constructor(popupContainer, blockContainer, filmsModel) {
+  constructor(popupContainer, blockContainer, filmsModel, filterModel) {
     this.#filmsModel = filmsModel;
+    this.#filterModel = filterModel;
+
     this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
     this.#blockContainer = blockContainer;
     this.#popupComponent = new PopupPresenter(popupContainer, this.#handleViewAction);
     this.#sortComponent = new SortPresenter(this.#blockContainer, this.#handleSortTypeChange);
 
     this.#filmBlockElement = new FilmBlockView();
-    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false, this.#handleViewAction, this.#mainListSortType, this.#filmsModel);
-    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true, this.#handleViewAction, SortType.RATING, this.#filmsModel);
-    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true, this.#handleViewAction, SortType.COMMENT, this.#filmsModel);
+    this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false, this.#handleViewAction, this.#mainListSortType, this.#filmsModel, this.#filterModel);
+    this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true, this.#handleViewAction, SortType.RATING, this.#filmsModel, this.#filterModel);
+    this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true, this.#handleViewAction, SortType.COMMENT, this.#filmsModel, this.#filterModel);
   }
 
   get films() {
-    return this.#filmsModel.films;
+    this.#filterType = this.#filterModel.filter;
+    const films = this.#filmsModel.films;
+    const filteredFilms = filter[this.#filterType](films);
+
+    return filteredFilms;
   }
 
   init = () => {
@@ -58,7 +68,7 @@ export default class FilmBlockPresenter {
   }
 
   #renderNoFilms = () => {
-    this.#noFilmComponent = new NoFilmView();
+    this.#noFilmComponent = new NoFilmView(this.#filterType);
     render(this.#blockContainer, this.#noFilmComponent, RenderPosition.BEFOREEND);
   }
 
@@ -90,6 +100,10 @@ export default class FilmBlockPresenter {
   }
 
   #clearFilmBoard = () => {
+    if (this.#noFilmComponent) {
+      remove(this.#noFilmComponent);
+    }
+
     this.#mainFilmList.destroy();
     this.#topRatedFilmList.destroy();
     this.#mostCommentedFilmList.destroy();

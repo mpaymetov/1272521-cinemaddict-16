@@ -1,13 +1,14 @@
 import FilmListView from '../view/film-list-view';
-import {remove, render, RenderPosition} from '../utils/render';
-import {FILM_COUNT_PER_STEP, LIST_EXTRA_FILM_COUNT} from '../const';
 import MoreButtonView from '../view/more-button-view';
 import FilmCardPresenter from './film-card-presenter';
+import {remove, render, RenderPosition} from '../utils/render';
+import {FILM_COUNT_PER_STEP, LIST_EXTRA_FILM_COUNT, SortType} from '../const';
 import {sortDate, sortRating, sortComment} from '../utils/film';
-import {SortType} from '../const';
+import {filter} from '../utils/filter';
 
 export default class FilmListPresenter {
   #filmsModel = null;
+  #filterModel = null;
   #popupComponent = null;
   #filmBlockElement = null;
   #filmListTitle = null;
@@ -22,7 +23,7 @@ export default class FilmListPresenter {
   #filmPresenter = new Map();
   #filmsSortType = null;
 
-  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData, filmsSortType, filmsModel) {
+  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData, filmsSortType, filmsModel, filterModel) {
     this.#popupComponent = popupComponent;
     this.#filmBlockElement = filmBlockElement;
     this.#filmListTitle = title;
@@ -31,19 +32,24 @@ export default class FilmListPresenter {
     this.#changeData = changeData;
     this.#filmsSortType = filmsSortType;
     this.#filmsModel = filmsModel;
+    this.#filterModel = filterModel;
   }
 
   get films() {
+    const filterType = this.#filterModel.filter;
+    const films = this.#filmsModel.films;
+    const filteredFilms = filter[filterType](films);
+
     switch (this.#filmsSortType) {
       case SortType.DATE:
-        return [...this.#filmsModel.films].sort(sortDate);
+        return filteredFilms.sort(sortDate);
       case SortType.RATING:
-        return [...this.#filmsModel.films].sort(sortRating);
+        return filteredFilms.sort(sortRating);
       case SortType.COMMENT:
-        return [...this.#filmsModel.films].sort(sortComment);
+        return filteredFilms.sort(sortComment);
     }
 
-    return this.#filmsModel.films;
+    return filteredFilms;
   }
 
   init = () => {
