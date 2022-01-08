@@ -93,6 +93,7 @@ export default class FilmBlockPresenter {
         this.#mostCommentedFilmList.updateFilm(data);
         break;
       case UpdateType.MAJOR:
+        this.#mainListSortType = SortType.DEFAULT;
         this.#clearFilmBoard();
         this.#renderFilmBoard();
         break;

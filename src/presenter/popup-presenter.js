@@ -54,7 +54,7 @@ export default class PopupPresenter {
   #handleWatchlistAddedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       {...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList}
     );
   }
@@ -62,7 +62,7 @@ export default class PopupPresenter {
   #handleWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       {...this.#film, isWatched: !this.#film.isWatched}
     );
   }
@@ -70,7 +70,7 @@ export default class PopupPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       {...this.#film, isFavorite: !this.#film.isFavorite}
     );
   }

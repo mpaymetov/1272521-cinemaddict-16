@@ -39,7 +39,7 @@ export default class FilmCardPresenter {
   #handleWatchlistAddedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       {...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList}
     );
   }
@@ -47,7 +47,7 @@ export default class FilmCardPresenter {
   #handleWatchedClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       {...this.#film, isWatched: !this.#film.isWatched}
     );
   }
@@ -55,7 +55,7 @@ export default class FilmCardPresenter {
   #handleFavoriteClick = () => {
     this.#changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       {...this.#film, isFavorite: !this.#film.isFavorite}
     );
   }

@@ -1,12 +1,12 @@
-import {render, RenderPosition} from './utils/render.js';
 import UserRankView from './view/user-rank-view';
 import StatisticView from './view/statistic-view';
 import FilterPresenter from './presenter/filter-presenter';
 import FilmBlockPresenter from './presenter/film-block-presenter';
-import {generateFilm} from './mock/film.js';
-import {FILM_COUNT} from './const';
 import FilmsModel from './model/films-model';
 import FilterModel from './model/filter-model';
+import {render, RenderPosition} from './utils/render.js';
+import {FILM_COUNT} from './const';
+import {generateFilm} from './mock/film.js';
 
 const films = Array.from({length: FILM_COUNT}, generateFilm);
 
