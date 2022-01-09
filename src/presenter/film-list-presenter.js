@@ -9,6 +9,7 @@ import {filter} from '../utils/filter';
 export default class FilmListPresenter {
   #filmsModel = null;
   #filterModel = null;
+  #commentModel = null;
   #popupComponent = null;
   #filmBlockElement = null;
   #filmListTitle = null;
@@ -23,7 +24,7 @@ export default class FilmListPresenter {
   #filmPresenter = new Map();
   #filmsSortType = null;
 
-  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData, filmsSortType, filmsModel, filterModel) {
+  constructor(filmBlockElement, popupComponent, title, isExtra = false, changeData, filmsSortType, filmsModel, filterModel, commentModel) {
     this.#popupComponent = popupComponent;
     this.#filmBlockElement = filmBlockElement;
     this.#filmListTitle = title;
@@ -33,6 +34,7 @@ export default class FilmListPresenter {
     this.#filmsSortType = filmsSortType;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
+    this.#commentModel = commentModel;
   }
 
   get films() {
@@ -76,7 +78,7 @@ export default class FilmListPresenter {
   }
 
   #renderFilm = (film) => {
-    const filmCardPresenter = new FilmCardPresenter(this.#filmListContainer, this.#popupComponent, this.#changeData);
+    const filmCardPresenter = new FilmCardPresenter(this.#filmListContainer, this.#popupComponent, this.#changeData, this.#commentModel);
     filmCardPresenter.init(film);
     this.#filmPresenter.set(film.id, filmCardPresenter);
   }

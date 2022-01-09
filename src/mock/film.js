@@ -79,6 +79,7 @@ const generateComment = () => {
   const date = dayjs().add(secondsGap, 'second').toDate();
 
   return {
+    id: nanoid(),
     author: getRandomFromArray(authors),
     date,
     message: getRandomFromArray(messages),

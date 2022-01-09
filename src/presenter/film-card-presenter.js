@@ -8,11 +8,13 @@ export default class FilmCardPresenter {
   #filmContainer = null;
   #filmCardComponent = null;
   #changeData = null;
+  #commentModel = null;
 
-  constructor(filmContainer, popupComponent, changeData) {
+  constructor(filmContainer, popupComponent, changeData, commentModel) {
     this.#filmContainer = filmContainer;
     this.#popupComponent = popupComponent;
     this.#changeData = changeData;
+    this.#commentModel = commentModel;
   }
 
   init = (film) => {
@@ -32,6 +34,7 @@ export default class FilmCardPresenter {
     }
 
     this.#filmCardComponent.setClickHandler(() => {
+      this.#commentModel.comments = this.#film.comments;
       this.#popupComponent.init(this.#film);
     });
   }
