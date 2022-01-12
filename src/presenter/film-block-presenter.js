@@ -64,9 +64,7 @@ export default class FilmBlockPresenter {
       return;
     }
 
-    this.#mainListSortType = sortType;
-    this.#renderSort();
-    this.#mainFilmList.changeSortType(sortType);
+    this.#updateBoard(true, sortType);
   }
 
   #renderSort = () => {
@@ -91,21 +89,25 @@ export default class FilmBlockPresenter {
     this.#filmsModel.updateFilm(updateType, update);
   }
 
+  #updateBoard = (changeSort = false, sortType = SortType.DEFAULT) => {
+    if (changeSort) {
+      this.#mainListSortType = sortType;
+      this.#mainFilmList.changeSortType(sortType);
+    }
+    this.#clearFilmBoard();
+    this.#renderFilmBoard();
+  }
+
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.MINOR:
+        this.#updateBoard(false);
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
           this.#popupComponent.init(data);
         }
-        this.#mainFilmList.updateFilm(data);
-        this.#topRatedFilmList.updateFilm(data);
-        this.#mostCommentedFilmList.destroy();
-        this.#mostCommentedFilmList.init();
         break;
       case UpdateType.MAJOR:
-        this.#mainListSortType = SortType.DEFAULT;
-        this.#clearFilmBoard();
-        this.#renderFilmBoard();
+        this.#updateBoard(true, SortType.DEFAULT);
         break;
     }
   }

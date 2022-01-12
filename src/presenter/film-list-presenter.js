@@ -73,8 +73,6 @@ export default class FilmListPresenter {
     }
 
     this.#filmsSortType = sortType;
-    this.#clearFilmList();
-    this.#renderFilmList();
   }
 
   #renderFilm = (film) => {
