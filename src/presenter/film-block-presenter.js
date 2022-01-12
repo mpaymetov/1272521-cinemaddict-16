@@ -32,7 +32,7 @@ export default class FilmBlockPresenter {
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
 
     this.#blockContainer = blockContainer;
     this.#popupComponent = new PopupPresenter(popupContainer, this.#handleViewAction, this.#commentsModel);
@@ -86,20 +86,21 @@ export default class FilmBlockPresenter {
     }
   }
 
+  #handleCommentsModelEvent = (updateType, data) => {
+    const update = {...data, comments: this.#commentsModel.comments};
+    this.#filmsModel.updateFilm(updateType, update);
+  }
+
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
-      case UpdateType.PATCH:
-        if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
-          this.#popupComponent.init(data);
-        }
-        break;
       case UpdateType.MINOR:
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
           this.#popupComponent.init(data);
         }
         this.#mainFilmList.updateFilm(data);
         this.#topRatedFilmList.updateFilm(data);
-        this.#mostCommentedFilmList.updateFilm(data);
+        this.#mostCommentedFilmList.destroy();
+        this.#mostCommentedFilmList.init();
         break;
       case UpdateType.MAJOR:
         this.#mainListSortType = SortType.DEFAULT;

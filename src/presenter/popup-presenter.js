@@ -112,7 +112,7 @@ export default class PopupPresenter {
   #handleOnCtrlEnterKeyDown = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
-      this.#handleViewAction(UserAction.ADD_COMMENT, UpdateType.PATCH, this.#commentBlockPresenter.getNewComment());
+      this.#handleViewAction(UserAction.ADD_COMMENT, UpdateType.MINOR, this.#commentBlockPresenter.getNewComment());
     }
   }
 

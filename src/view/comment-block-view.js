@@ -108,7 +108,7 @@ export default class CommentBlockView extends SmartView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.PATCH, evt.currentTarget.dataset.id);
+    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MINOR, evt.currentTarget.dataset.id);
   }
 
   #emojiInputHandler = (evt) => {

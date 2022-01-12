@@ -16,13 +16,13 @@ export default class CommentsModel extends AbstractObservable {
   addComment = (updateType, update, updateFrom) => {
     const newComment = {
       id: nanoid(),
-      author: 'SUPER ADMIN',
+      author: 'Super Admin',
       date: dayjs().toDate(),
       ...update
     };
     this.#comments = [
-      newComment,
       ...this.#comments,
+      newComment,
     ];
 
     this._notify(updateType, updateFrom);
