@@ -1,24 +1,31 @@
-import {render, RenderPosition} from './utils/render.js';
 import UserRankView from './view/user-rank-view';
-import SiteMenuView from './view/site-menu-view';
 import StatisticView from './view/statistic-view';
+import FilterPresenter from './presenter/filter-presenter';
 import FilmBlockPresenter from './presenter/film-block-presenter';
-import {generateFilm} from './mock/film.js';
-import {generateFilter} from './mock/filter';
+import FilmsModel from './model/films-model';
+import FilterModel from './model/filter-model';
+import CommentsModel from './model/comments-model';
+import {render, RenderPosition} from './utils/render.js';
 import {FILM_COUNT} from './const';
+import {generateFilm} from './mock/film.js';
 
 const films = Array.from({length: FILM_COUNT}, generateFilm);
-const filters = generateFilter(films);
+
+const filterModel = new FilterModel();
+const filmsModel = new FilmsModel();
+filmsModel.films = films;
+const commentsModel = new CommentsModel();
 
 const siteBodyElement = document.querySelector('body');
 const siteHeader = siteBodyElement.querySelector('.header');
-render(siteHeader, new UserRankView(), RenderPosition.BEFOREEND);
-
 const siteMainElement = siteBodyElement.querySelector('.main');
-render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
-
 const footerStatisticsElement = siteBodyElement.querySelector('.footer__statistics');
+
+render(siteHeader, new UserRankView(), RenderPosition.BEFOREEND);
 render(footerStatisticsElement, new StatisticView(films.length), RenderPosition.BEFOREEND);
 
-const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement);
-filmBlockPresenter.init(films);
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement, filmsModel, filterModel, commentsModel);
+
+filterPresenter.init();
+filmBlockPresenter.init();

@@ -1,5 +1,6 @@
 import FilmCardView from '../view/film-card-view';
 import {remove, render, replace, RenderPosition} from '../utils/render';
+import {UserAction, UpdateType} from '../const';
 
 export default class FilmCardPresenter {
   #popupComponent = null;
@@ -7,11 +8,13 @@ export default class FilmCardPresenter {
   #filmContainer = null;
   #filmCardComponent = null;
   #changeData = null;
+  #commentModel = null;
 
-  constructor(filmContainer, popupComponent, changeData) {
+  constructor(filmContainer, popupComponent, changeData, commentModel) {
     this.#filmContainer = filmContainer;
     this.#popupComponent = popupComponent;
     this.#changeData = changeData;
+    this.#commentModel = commentModel;
   }
 
   init = (film) => {
@@ -31,20 +34,33 @@ export default class FilmCardPresenter {
     }
 
     this.#filmCardComponent.setClickHandler(() => {
+      this.#commentModel.comments = this.#film.comments;
       this.#popupComponent.init(this.#film);
     });
   }
 
   #handleWatchlistAddedClick = () => {
-    this.#changeData({...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      {...this.#film, isAddedToWatchList: !this.#film.isAddedToWatchList}
+    );
   }
 
   #handleWatchedClick = () => {
-    this.#changeData({...this.#film, isWatched: !this.#film.isWatched});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      {...this.#film, isWatched: !this.#film.isWatched}
+    );
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#film, isFavorite: !this.#film.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      {...this.#film, isFavorite: !this.#film.isFavorite}
+    );
   }
 
   destroy = () => {

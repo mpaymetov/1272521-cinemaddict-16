@@ -1,8 +1,10 @@
+import he from 'he';
 import SmartView from './smart-view';
 import {getCommentDate} from '../utils/film';
+import {UserAction, UpdateType} from '../const';
 
 const createCommentItemTemplate = (comment) => {
-  const {author, date, message, emotion} = comment;
+  const {id, author, date, message, emotion} = comment;
   const commentDate = getCommentDate(date);
 
   return `<li class="film-details__comment">
@@ -10,11 +12,11 @@ const createCommentItemTemplate = (comment) => {
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
     </span>
     <div>
-      <p class="film-details__comment-text">${message}</p>
+      <p class="film-details__comment-text">${he.encode(message)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${commentDate}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-id="${id}">Delete</button>
       </p>
     </div>
   </li>`;
@@ -80,6 +82,9 @@ export default class CommentBlockView extends SmartView {
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
+
+    this.element.querySelectorAll('.film-details__comment-delete')
+      .forEach((btn) => btn.addEventListener('click', this.#deleteClickHandler));
   }
 
   #setInnerHandlers = () => {
@@ -88,6 +93,22 @@ export default class CommentBlockView extends SmartView {
 
     this.element.querySelector('.film-details__comment-input')
       .addEventListener('input', this.#commentInputHandler);
+  }
+
+  setViewActionHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelectorAll('.film-details__comment-delete')
+      .forEach((btn) => btn.addEventListener('click', this.#deleteClickHandler));
+  }
+
+  getNewCommentData = () => ({
+    emotion: this._data.commentEmoji,
+    message: this._data.commentText,
+  });
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(UserAction.DELETE_COMMENT, UpdateType.MINOR, evt.currentTarget.dataset.id);
   }
 
   #emojiInputHandler = (evt) => {
