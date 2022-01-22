@@ -9,7 +9,7 @@ import FilmsModel from './model/films-model';
 import FilterModel from './model/filter-model';
 import CommentsModel from './model/comments-model';
 
-import {render, RenderPosition} from './utils/render.js';
+import {remove, render, RenderPosition} from './utils/render.js';
 import {FILM_COUNT, MenuItem} from './const';
 import {generateFilm} from './mock/film.js';
 
@@ -28,24 +28,25 @@ const footerStatisticsElement = siteBodyElement.querySelector('.footer__statisti
 render(siteHeader, new UserRankView(), RenderPosition.BEFOREEND);
 render(footerStatisticsElement, new StatisticView(films.length), RenderPosition.BEFOREEND);
 
-const handleFilterClick = (filterItem) => {
-  switch (filterItem) {
+const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement, filmsModel, filterModel, commentsModel);
+
+let statisticsElement = null;
+
+const handleMenuClick = (menuType) => {
+  switch (menuType) {
     case MenuItem.FILMS:
-      // Показать фильтры
-      // Показать доску
-      // Скрыть статистику
+      remove(statisticsElement);
+      filmBlockPresenter.init();
       break;
     case MenuItem.STATISTICS:
-      //filmBlockPresenter.destroy();
-      // Показать статистику
+      filmBlockPresenter.destroy();
+      statisticsElement = new StatisticsView(filmsModel.films);
+      render(siteMainElement, statisticsElement, RenderPosition.BEFOREEND);
       break;
   }
 };
 
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
-const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement, filmsModel, filterModel, commentsModel);
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel, handleMenuClick);
 
 filterPresenter.init();
-//filmBlockPresenter.init();
-
-render(siteMainElement, new StatisticsView(filmsModel.films), RenderPosition.BEFOREEND);
+filmBlockPresenter.init();

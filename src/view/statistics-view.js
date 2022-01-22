@@ -3,11 +3,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart-view';
 import {StatisticsDuration} from '../const';
 
-const renderDaysChart = (statisticCtx, films, dateFrom, dateTo) => {
+const renderDaysChart = (statisticCtx) => {
   const BAR_HEIGHT = 50;
   statisticCtx.height = BAR_HEIGHT * 5;
 
-  const myChart = new Chart(statisticCtx, {
+  new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
