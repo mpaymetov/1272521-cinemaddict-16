@@ -1,21 +1,21 @@
 import {capitalizeFirstLetter} from '../utils/film';
 import AbstractView from './abstract-view.js';
-import {FilterType, MenuItem} from '../const';
+import {FilterType, MenuType} from '../const';
 
 const createFilterItemTemplate = (filter, isFirst, activeFilterType) => {
   const {type, name, count} = filter;
   const activeClass = (type === activeFilterType) ? 'main-navigation__item--active' : '';
   return (isFirst) ?
     `<a href="#${name}" class="main-navigation__item ${activeClass}"
-      data-filter-type="${type}" data-menu-type="${MenuItem.FILMS}">All movies</a>` :
+      data-filter-type="${type}" data-menu-type="${MenuType.FILMS}">All movies</a>` :
     `<a href="#${name}" class="main-navigation__item ${activeClass}"
-      data-filter-type="${type}" data-menu-type="${MenuItem.FILMS}">${capitalizeFirstLetter(name)} <span class="main-navigation__item-count">${count}</span></a>`;
+      data-filter-type="${type}" data-menu-type="${MenuType.FILMS}">${capitalizeFirstLetter(name)} <span class="main-navigation__item-count">${count}</span></a>`;
 };
 
 const createSiteMenuTemplate = (filterItems, currentFilterType, menuType) => {
-  const activeClass = (menuType === MenuItem.STATISTICS) ? 'main-navigation__additional--active' : '';
+  const activeClass = (menuType === MenuType.STATISTICS) ? 'main-navigation__additional--active' : '';
 
-  const filterType = (menuType === MenuItem.FILMS) ? currentFilterType : '';
+  const filterType = (menuType === MenuType.FILMS) ? currentFilterType : '';
 
   const filterItemsTemplate = filterItems
     .map((filter, index) => createFilterItemTemplate(filter, index === 0, filterType))
@@ -26,7 +26,7 @@ const createSiteMenuTemplate = (filterItems, currentFilterType, menuType) => {
       ${filterItemsTemplate}
     </div>
     <a href="#stats" class="main-navigation__additional ${activeClass}"
-      data-filter-type="${FilterType.HISTORY}" data-menu-type="${MenuItem.STATISTICS}">Stats</a>
+      data-filter-type="${FilterType.HISTORY}" data-menu-type="${MenuType.STATISTICS}">Stats</a>
   </nav>`;
 };
 

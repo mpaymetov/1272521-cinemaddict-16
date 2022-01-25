@@ -54,11 +54,6 @@ export default class FilmBlockPresenter {
   destroy = () => {
     this.#clearFilmBoard();
 
-    //remove(this.#popupComponent);
-    //remove(this.#sortComponent);
-    //remove(this.#mainFilmList);
-    //remove(this.#topRatedFilmList);
-    //remove(this.#mostCommentedFilmList);
     remove(this.#filmBlockElement);
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);

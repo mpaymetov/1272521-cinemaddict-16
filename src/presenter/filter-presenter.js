@@ -1,7 +1,7 @@
 import FilterView from '../view/filter-view';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {filter} from '../utils/filter';
-import {FilterType, UpdateType, MenuItem} from '../const';
+import {FilterType, UpdateType, MenuType} from '../const';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -17,7 +17,7 @@ export default class FilterPresenter {
     this.#filterModel = filterModel;
     this.#filmsModel = filmsModel;
     this.#changeBoard = changeBoard;
-    this.#menuType = MenuItem.FILMS;
+    this.#menuType = MenuType.FILMS;
   }
 
   get filters() {
@@ -64,7 +64,7 @@ export default class FilterPresenter {
 
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
-  }
+  };
 
   destroy = () => {
     remove(this.#filterComponent);
@@ -74,11 +74,11 @@ export default class FilterPresenter {
     this.#filterModel.removeObserver(this.#handleModelEvent);
 
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
-  }
+  };
 
   #handleModelEvent = () => {
     this.init();
-  }
+  };
 
   #handleFilterTypeChange = (filterType, menuType) => {
     if (this.#menuType !== menuType) {

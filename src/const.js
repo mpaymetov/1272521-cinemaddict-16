@@ -28,12 +28,12 @@ export const FilterType = {
   FAVORITES: 'favorites',
 };
 
-export const MenuItem = {
+export const MenuType = {
   FILMS: 'FILMS',
   STATISTICS: 'STATISTICS',
 };
 
-export const StatisticsDuration = {
+export const DurationType = {
   ALL_TIME: 'all-time',
   TODAY: 'today',
   WEEK: 'week',

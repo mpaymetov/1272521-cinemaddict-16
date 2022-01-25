@@ -10,7 +10,7 @@ import FilterModel from './model/filter-model';
 import CommentsModel from './model/comments-model';
 
 import {remove, render, RenderPosition} from './utils/render.js';
-import {FILM_COUNT, MenuItem} from './const';
+import {FILM_COUNT, MenuType} from './const';
 import {generateFilm} from './mock/film.js';
 
 const films = Array.from({length: FILM_COUNT}, generateFilm);
@@ -34,13 +34,13 @@ let statisticsElement = null;
 
 const handleMenuClick = (menuType) => {
   switch (menuType) {
-    case MenuItem.FILMS:
+    case MenuType.FILMS:
       remove(statisticsElement);
       filmBlockPresenter.init();
       break;
-    case MenuItem.STATISTICS:
+    case MenuType.STATISTICS:
       filmBlockPresenter.destroy();
-      statisticsElement = new StatisticsView(filmsModel.films);
+      statisticsElement = new StatisticsView(filmsModel);
       render(siteMainElement, statisticsElement, RenderPosition.BEFOREEND);
       break;
   }
