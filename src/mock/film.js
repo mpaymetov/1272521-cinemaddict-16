@@ -186,6 +186,13 @@ const generateActors = () => {
   return getRandomArray(MIN_ACTORS_COUNT, MAX_ACTORS_COUNT, actorArr);
 };
 
+const generateWatchingDate = () => {
+  const maxSecondsGap = 63072000; // 2 года
+  const secondsGap = -1 * getRandomInteger(0, maxSecondsGap);
+  const date = dayjs().add(secondsGap, 'second').toDate();
+  return date;
+};
+
 const title = generateTitle();
 
 export const generateFilm = () => (
@@ -207,6 +214,7 @@ export const generateFilm = () => (
     comments: generateComments(),
     isAddedToWatchList: Boolean(getRandomInteger()),
     isWatched: Boolean(getRandomInteger()),
+    watchingDate: generateWatchingDate(),
     isFavorite: Boolean(getRandomInteger()),
   }
 );

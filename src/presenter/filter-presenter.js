@@ -1,7 +1,7 @@
 import FilterView from '../view/filter-view';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {filter} from '../utils/filter';
-import {FilterType, UpdateType} from '../const';
+import {FilterType, UpdateType, MenuType} from '../const';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -9,11 +9,15 @@ export default class FilterPresenter {
   #filmsModel = null;
 
   #filterComponent = null;
+  #changeBoard = null;
+  #menuType = null;
 
-  constructor(filterContainer, filterModel, filmsModel) {
+  constructor(filterContainer, filterModel, filmsModel, changeBoard) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#filmsModel = filmsModel;
+    this.#changeBoard = changeBoard;
+    this.#menuType = MenuType.FILMS;
   }
 
   get filters() {
@@ -47,7 +51,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterView(filters, this.#filterModel.filter, this.#menuType);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
@@ -60,7 +64,7 @@ export default class FilterPresenter {
 
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
-  }
+  };
 
   destroy = () => {
     remove(this.#filterComponent);
@@ -70,17 +74,21 @@ export default class FilterPresenter {
     this.#filterModel.removeObserver(this.#handleModelEvent);
 
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
-  }
+  };
 
   #handleModelEvent = () => {
     this.init();
-  }
+  };
 
-  #handleFilterTypeChange = (filterType) => {
-    if (this.#filterModel.filter === filterType) {
-      return;
+  #handleFilterTypeChange = (filterType, menuType) => {
+    if (this.#menuType !== menuType) {
+      this.#menuType = menuType;
+      this.#changeBoard(menuType);
+      this.init();
     }
 
-    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+    if (this.#filterModel.filter !== filterType) {
+      this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+    }
   }
 }

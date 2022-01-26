@@ -16,6 +16,7 @@ export const UserAction = {
 };
 
 export const UpdateType = {
+  PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
@@ -25,4 +26,17 @@ export const FilterType = {
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+};
+
+export const MenuType = {
+  FILMS: 'FILMS',
+  STATISTICS: 'STATISTICS',
+};
+
+export const DurationType = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };

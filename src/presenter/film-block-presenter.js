@@ -30,10 +30,6 @@ export default class FilmBlockPresenter {
     this.#filterModel = filterModel;
     this.#commentsModel = commentsModel;
 
-    this.#filmsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
-
     this.#blockContainer = blockContainer;
     this.#popupComponent = new PopupPresenter(popupContainer, this.#handleViewAction, this.#commentsModel);
     this.#sortComponent = new SortPresenter(this.#blockContainer, this.#handleSortTypeChange);
@@ -47,16 +43,30 @@ export default class FilmBlockPresenter {
       this.#handleViewAction, SortType.COMMENT, this.#filmsModel, this.#filterModel, this.#commentsModel);
   }
 
+  init = () => {
+    this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
+
+    this.#renderFilmBoard();
+  }
+
+  destroy = () => {
+    this.#clearFilmBoard();
+
+    remove(this.#filmBlockElement);
+
+    this.#filmsModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
+  }
+
   get films() {
     this.#filterType = this.#filterModel.filter;
     const films = this.#filmsModel.films;
     const filteredFilms = filter[this.#filterType](films);
 
     return filteredFilms;
-  }
-
-  init = () => {
-    this.#renderFilmBoard();
   }
 
   #handleSortTypeChange = (sortType) => {
