@@ -1,13 +1,26 @@
 import AbstractObservable from '../utils/abstract-observable.js';
 import {nanoid} from 'nanoid';
 import dayjs from 'dayjs';
+import {UpdateType} from '../const';
 
 export default class CommentsModel extends AbstractObservable {
+  #apiService = null;
   #comments = [];
 
-  set comments(comments) {
-    this.#comments = [...comments];
+  constructor(apiService) {
+    super();
+    this.#apiService = apiService;
   }
+
+  init = async () => {
+    try {
+      this.#comments = await this.#apiService.getComments;
+    } catch(err) {
+      this.#comments = [];
+    }
+
+    //this._notify(UpdateType.INIT);
+  };
 
   get comments() {
     return this.#comments;
