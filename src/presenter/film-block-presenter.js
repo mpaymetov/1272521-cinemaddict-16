@@ -50,7 +50,8 @@ export default class FilmBlockPresenter {
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
+    //this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
 
     this.#renderFilmBoard();
   }
@@ -62,7 +63,8 @@ export default class FilmBlockPresenter {
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
-    this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
+    //this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
   }
 
   get films() {
@@ -118,6 +120,11 @@ export default class FilmBlockPresenter {
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
+      case UpdateType.PATCH:
+        if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
+          this.#popupComponent.init(data);
+        }
+        break;
       case UpdateType.MINOR:
         this.#updateBoard(false);
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {

@@ -3,8 +3,8 @@ import SmartView from './smart-view';
 import {getCommentDate} from '../utils/film';
 import {UserAction, UpdateType} from '../const';
 
-const createCommentItemTemplate = (comment) => {
-  const {id, author, date, message, emotion} = comment;
+const createCommentItemTemplate = (commentItem) => {
+  const {id, author, date, comment, emotion} = commentItem;
   const commentDate = getCommentDate(date);
 
   return `<li class="film-details__comment">
@@ -12,7 +12,7 @@ const createCommentItemTemplate = (comment) => {
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
     </span>
     <div>
-      <p class="film-details__comment-text">${he.encode(message)}</p>
+      <p class="film-details__comment-text">${he.encode(comment)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${commentDate}</span>

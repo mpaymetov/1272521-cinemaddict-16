@@ -1,6 +1,9 @@
 export const FILM_COUNT_PER_STEP = 5;
 export const LIST_EXTRA_FILM_COUNT = 2;
 
+export const AUTHORIZATION = 'Basic HLh6aRHkt7VyL6fn';
+export const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
+
 export const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
