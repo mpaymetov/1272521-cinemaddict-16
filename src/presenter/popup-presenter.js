@@ -2,6 +2,7 @@ import PopupView from '../view/popup-view';
 import CommentBlockPresenter from './comment-block-presenter';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import {UpdateType, UserAction} from '../const';
+import dayjs from 'dayjs';
 
 export default class PopupPresenter {
   #film = null;
@@ -95,7 +96,7 @@ export default class PopupPresenter {
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
-      {...this.#film, isWatched: !this.#film.isWatched}
+      {...this.#film, isWatched: !this.#film.isWatched, watchingDate: dayjs()}
     );
   }
 

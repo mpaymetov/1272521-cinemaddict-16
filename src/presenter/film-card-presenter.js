@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card-view';
 import {remove, render, replace, RenderPosition} from '../utils/render';
 import {UserAction, UpdateType} from '../const';
+import dayjs from 'dayjs';
 
 export default class FilmCardPresenter {
   #popupComponent = null;
@@ -48,7 +49,7 @@ export default class FilmCardPresenter {
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
-      {...this.#film, isWatched: !this.#film.isWatched}
+      {...this.#film, isWatched: !this.#film.isWatched, watchingDate: dayjs()}
     );
   }
 

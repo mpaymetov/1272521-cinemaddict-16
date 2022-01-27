@@ -123,7 +123,13 @@ export default class FilmBlockPresenter {
         }
         break;
       case UpdateType.MINOR:
-        this.#updateBoard(false);
+        this.#mainFilmList.updateFilm(data);
+
+        this.#topRatedFilmList.destroy();
+        this.#mostCommentedFilmList.destroy();
+        this.#topRatedFilmList.init();
+        this.#mostCommentedFilmList.init();
+
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
           this.#popupComponent.init(data);
         }
