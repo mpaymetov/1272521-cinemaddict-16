@@ -10,6 +10,8 @@ export default class PopupPresenter {
   #commentBlockPresenter = null;
   #commentsModel = null;
 
+  #commentsFilmId = null;
+
   #changeData = null;
   #commentMap = new Map();
 
@@ -21,7 +23,13 @@ export default class PopupPresenter {
 
   init = (film) => {
     this.#film = film;
-    this.comments.forEach((comment) => {this.#commentMap.set(comment.id, comment);});
+
+    if (this.#commentsFilmId === film.id) {
+      this.comments.forEach((comment) => {this.#commentMap.set(comment.id, comment);});
+    } else {
+      this.#commentsFilmId = film.id;
+      this.#commentsModel.init(film);
+    }
 
     const prevFilmPopupComponent = this.#filmPopupComponent;
     this.#filmPopupComponent = new PopupView(this.#film);
@@ -34,6 +42,7 @@ export default class PopupPresenter {
     this.#filmPopupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     if (prevFilmPopupComponent === null) {
+      this.#commentsModel.init(film);
       this.#show();
       document.addEventListener('keydown', this.#handleOnEscKeyDown);
       document.addEventListener('keydown', this.#handleOnCtrlEnterKeyDown);

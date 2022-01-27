@@ -1,5 +1,6 @@
 import FilmBlockView from '../view/film-block-view';
 import NoFilmView from '../view/no-film-view';
+import LoadingView from '../view/loading-view.js';
 import FilmListPresenter from './film-list-presenter';
 import PopupPresenter from './popup-presenter';
 import SortPresenter from './sort-presenter';
@@ -16,6 +17,7 @@ export default class FilmBlockPresenter {
 
   #sortComponent = null;
   #noFilmComponent = null;
+  #loadingComponent = null;
   #filmBlockElement = null;
 
   #mainFilmList = null;
@@ -24,6 +26,7 @@ export default class FilmBlockPresenter {
 
   #mainListSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
   constructor(popupContainer, blockContainer, filmsModel, filterModel, commentsModel) {
     this.#filmsModel = filmsModel;
@@ -33,6 +36,7 @@ export default class FilmBlockPresenter {
     this.#blockContainer = blockContainer;
     this.#popupComponent = new PopupPresenter(popupContainer, this.#handleViewAction, this.#commentsModel);
     this.#sortComponent = new SortPresenter(this.#blockContainer, this.#handleSortTypeChange);
+    this.#loadingComponent = new LoadingView();
 
     this.#filmBlockElement = new FilmBlockView();
     this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false,
@@ -46,7 +50,8 @@ export default class FilmBlockPresenter {
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
+    //this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
 
     this.#renderFilmBoard();
   }
@@ -58,7 +63,8 @@ export default class FilmBlockPresenter {
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
-    this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
+    //this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
   }
 
   get films() {
@@ -108,8 +114,17 @@ export default class FilmBlockPresenter {
     this.#renderFilmBoard();
   }
 
+  #renderLoading = () => {
+    render(this.#blockContainer, this.#loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
+      case UpdateType.PATCH:
+        if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
+          this.#popupComponent.init(data);
+        }
+        break;
       case UpdateType.MINOR:
         this.#updateBoard(false);
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
@@ -118,6 +133,11 @@ export default class FilmBlockPresenter {
         break;
       case UpdateType.MAJOR:
         this.#updateBoard(true, SortType.DEFAULT);
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderFilmBoard();
         break;
     }
   }
@@ -134,9 +154,15 @@ export default class FilmBlockPresenter {
     this.#sortComponent.destroy();
 
     remove(this.#filmBlockElement);
+    remove(this.#loadingComponent);
   }
 
   #renderFilmBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (this.films.length === 0) {
       this.#renderNoFilms();
       return;
