@@ -28,7 +28,14 @@ export default class CommentsModel extends AbstractObservable {
     try {
       const response = await this.#apiService.addComment(update, updateFrom);
       this.#comments = response.comments;
-      this._notify(updateType, response.movie);
+
+      const commentsId = this.#getCommentsId();
+      const film = {
+        ...updateFrom,
+        comments: commentsId
+      };
+
+      this._notify(updateType, film);
     } catch(err) {
       throw new Error('Can\'t add comment');
     }
