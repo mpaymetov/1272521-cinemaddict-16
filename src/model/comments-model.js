@@ -1,6 +1,4 @@
 import AbstractObservable from '../utils/abstract-observable.js';
-import {nanoid} from 'nanoid';
-import dayjs from 'dayjs';
 import {UpdateType} from '../const';
 
 export default class CommentsModel extends AbstractObservable {
@@ -26,33 +24,44 @@ export default class CommentsModel extends AbstractObservable {
     return this.#comments;
   }
 
-  addComment = (updateType, update, updateFrom) => {
-    const newComment = {
-      id: nanoid(),
-      author: 'Super Admin',
-      date: dayjs().toDate(),
-      ...update
-    };
-    this.#comments = [
-      ...this.#comments,
-      newComment,
-    ];
-
-    this._notify(updateType, updateFrom);
+  addComment = async (updateType, update, updateFrom) => {
+    try {
+      const response = await this.#apiService.addComment(update, updateFrom);
+      this.#comments = response.comments;
+      this._notify(updateType, response.movie);
+    } catch(err) {
+      throw new Error('Can\'t add comment');
+    }
   }
 
-  deleteComment = (updateType, update, updateFrom) => {
+  #getCommentsId = () => {
+    const result = [...new Set(this.#comments.map((p) => p.id))];
+    return result;
+  }
+
+  deleteComment = async (updateType, update, updateFrom) => {
     const index = this.#comments.findIndex((comment) => comment.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
 
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1),
-    ];
+    try {
+      await this.#apiService.deleteComment(update);
+      this.#comments = [
+        ...this.#comments.slice(0, index),
+        ...this.#comments.slice(index + 1),
+      ];
 
-    this._notify(updateType, updateFrom);
+      const commentsId = this.#getCommentsId();
+      const film = {
+        ...updateFrom,
+        comments: commentsId
+      };
+
+      this._notify(updateType, film);
+    } catch(err) {
+      throw new Error('Can\'t delete comment');
+    }
   }
 }

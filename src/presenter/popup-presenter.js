@@ -23,14 +23,6 @@ export default class PopupPresenter {
 
   init = (film) => {
     this.#film = film;
-
-    if (this.#commentsFilmId === film.id) {
-      this.comments.forEach((comment) => {this.#commentMap.set(comment.id, comment);});
-    } else {
-      this.#commentsFilmId = film.id;
-      this.#commentsModel.init(film);
-    }
-
     const prevFilmPopupComponent = this.#filmPopupComponent;
     this.#filmPopupComponent = new PopupView(this.#film);
 
@@ -42,19 +34,15 @@ export default class PopupPresenter {
     this.#filmPopupComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     if (prevFilmPopupComponent === null) {
-      this.#commentsModel.init(film);
-      this.#show();
       document.addEventListener('keydown', this.#handleOnEscKeyDown);
       document.addEventListener('keydown', this.#handleOnCtrlEnterKeyDown);
-      return;
-    }
-
-    if (this.#popupContainer.contains(prevFilmPopupComponent.element)) {
+    } else if (this.#popupContainer.contains(prevFilmPopupComponent.element)) {
       replace(this.#filmPopupComponent, prevFilmPopupComponent);
-      this.#show();
+      remove(prevFilmPopupComponent);
     }
 
-    remove(prevFilmPopupComponent);
+    this.#showComments(film);
+    this.#show();
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -78,6 +66,16 @@ export default class PopupPresenter {
 
   get comments() {
     return this.#commentsModel.comments;
+  }
+
+  #showComments = (film) => {
+    if (this.#commentsFilmId === film.id) {
+      this.comments.forEach((comment) => {this.#commentMap.set(comment.id, comment);});
+      this.#commentBlockPresenter.init();
+    } else {
+      this.#commentsFilmId = film.id;
+      this.#commentsModel.init(film);
+    }
   }
 
   #destroy = () => {
@@ -122,7 +120,7 @@ export default class PopupPresenter {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
       const commentData = this.#commentBlockPresenter.getNewComment();
-      if (commentData.emotion && commentData.message) {
+      if (commentData.emotion && commentData.comment) {
         this.#handleViewAction(UserAction.ADD_COMMENT, UpdateType.MINOR, commentData);
       }
     }
@@ -133,17 +131,15 @@ export default class PopupPresenter {
     this.#destroy();
   }
 
+  #handleCloseClick = () => {
+    this.#hide();
+    document.removeEventListener('keydown', this.#handleOnEscKeyDown);
+    document.removeEventListener('keydown', this.#handleOnCtrlEnterKeyDown);
+  }
+
   #show = () => {
-    this.#commentBlockPresenter.init();
-
     this.#popupContainer.classList.add('hide-overflow');
-
-    this.#filmPopupComponent.setCloseClickHandler(() => {
-      this.#hide();
-      document.removeEventListener('keydown', this.#handleOnEscKeyDown);
-      document.removeEventListener('keydown', this.#handleOnCtrlEnterKeyDown);
-    });
-
+    this.#filmPopupComponent.setCloseClickHandler(this.#handleCloseClick);
     render(this.#popupContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
   }
 }

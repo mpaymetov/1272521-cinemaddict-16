@@ -103,7 +103,7 @@ export default class CommentBlockView extends SmartView {
 
   getNewCommentData = () => ({
     emotion: this._data.commentEmoji,
-    message: this._data.commentText,
+    comment: this._data.commentText,
   });
 
   #deleteClickHandler = (evt) => {
