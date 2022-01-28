@@ -49,9 +49,11 @@ export default class PopupPresenter {
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.ADD_COMMENT:
+        this.#commentBlockPresenter.setSavingNewComment();
         this.#commentsModel.addComment(updateType, update, this.#film);
         break;
       case UserAction.DELETE_COMMENT:
+        this.#commentBlockPresenter.setDeletingCommentId(update);
         this.#commentsModel.deleteComment(updateType, this.#commentMap.get(update), this.#film);
         break;
     }

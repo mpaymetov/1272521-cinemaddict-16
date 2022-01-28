@@ -31,9 +31,21 @@ export default class CommentBlockPresenter {
     remove(prevCommentBlockComponent);
   }
 
+  setDeletingCommentId = (commentId) => {
+    this.#commentBlockComponent.updateData({
+      deletingCommentId: commentId,
+    }, false);
+  }
+
+  setSavingNewComment = () => {
+    this.#commentBlockComponent.updateData({
+      isCommentSaving: true,
+    }, false);
+  }
+
   getNewComment = () => (
     this.#commentBlockComponent.getNewCommentData()
-  );
+  )
 
   get comments() {
     return this.#commentsModel.comments;

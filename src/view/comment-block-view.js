@@ -3,9 +3,10 @@ import SmartView from './smart-view';
 import {getCommentDate} from '../utils/film';
 import {UserAction, UpdateType} from '../const';
 
-const createCommentItemTemplate = (commentItem) => {
+const createCommentItemTemplate = (commentItem, deletingCommentId) => {
   const {id, author, date, comment, emotion} = commentItem;
   const commentDate = getCommentDate(date);
+  const isDeleting = deletingCommentId === id;
 
   return `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
@@ -16,7 +17,8 @@ const createCommentItemTemplate = (commentItem) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${commentDate}</span>
-        <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+        <button class="film-details__comment-delete" data-id="${id}"
+          ${isDeleting ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
       </p>
     </div>
   </li>`;
@@ -30,7 +32,7 @@ const createCommentBlockTemplate = (data) => {
   const emojiPukeActive = (data.commentEmoji === 'puke') ? 'checked' : '';
   const emojiAngryActive = (data.commentEmoji === 'angry') ? 'checked' : '';
   const commentItemsTemplate = Array.from(data.comments)
-    .map((comment) => createCommentItemTemplate(comment))
+    .map((comment) => createCommentItemTemplate(comment, data.deletingCommentId))
     .join('');
 
   return `<section class="film-details__comments-wrap">
@@ -44,26 +46,31 @@ const createCommentBlockTemplate = (data) => {
       <div class="film-details__add-emoji-label">${emojiImg}</div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentText}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here"
+          name="comment" ${data.isCommentSaving ? 'disabled' : ''}>${commentText}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${emojiSmileActive}>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile"
+          value="smile" ${emojiSmileActive} ${data.isCommentSaving ? 'disabled' : ''}>
         <label class="film-details__emoji-label" for="emoji-smile">
           <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
         </label>
 
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${emojiSleepingActive}>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping"
+          value="sleeping" ${emojiSleepingActive} ${data.isCommentSaving ? 'disabled' : ''}>
         <label class="film-details__emoji-label" for="emoji-sleeping">
           <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
         </label>
 
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${emojiPukeActive}>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke"
+          value="puke" ${emojiPukeActive} ${data.isCommentSaving ? 'disabled' : ''}>
         <label class="film-details__emoji-label" for="emoji-puke">
           <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
         </label>
 
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${emojiAngryActive}>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry"
+          value="angry" ${emojiAngryActive} ${data.isCommentSaving ? 'disabled' : ''}>
         <label class="film-details__emoji-label" for="emoji-angry">
           <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
         </label>
@@ -112,6 +119,10 @@ export default class CommentBlockView extends SmartView {
   }
 
   #emojiInputHandler = (evt) => {
+    if (this._data.isCommentSaving) {
+      return;
+    }
+
     const inputId = evt.currentTarget.getAttribute('for');
     const emoji = this.element.querySelector(`#${inputId}`).value;
     this.updateData({
@@ -133,6 +144,8 @@ export default class CommentBlockView extends SmartView {
     comments: [...comments],
     commentText: null,
     commentEmoji: null,
+    deletingCommentId: null,
+    isCommentSaving: false,
   });
 
   static parseDataToComments = (data) => (data.comments);
