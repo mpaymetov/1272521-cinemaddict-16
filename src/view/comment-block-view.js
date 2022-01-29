@@ -8,7 +8,7 @@ const createCommentItemTemplate = (commentItem, deletingCommentId) => {
   const commentDate = getCommentDate(date);
   const isDeleting = deletingCommentId === id;
 
-  return `<li class="film-details__comment">
+  return `<li class="film-details__comment" id="comment-${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
     </span>

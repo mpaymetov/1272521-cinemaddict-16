@@ -1,5 +1,5 @@
 import PopupView from '../view/popup-view';
-import CommentBlockPresenter from './comment-block-presenter';
+import CommentBlockPresenter, {State as CommentBlockPresenterViewState} from './comment-block-presenter';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import {UpdateType, UserAction} from '../const';
 import dayjs from 'dayjs';
@@ -46,15 +46,23 @@ export default class PopupPresenter {
     this.#show();
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.ADD_COMMENT:
-        this.#commentBlockPresenter.setSavingNewComment();
-        this.#commentsModel.addComment(updateType, update, this.#film);
+        this.#commentBlockPresenter.setViewState(CommentBlockPresenterViewState.SAVING);
+        try {
+          await this.#commentsModel.addComment(updateType, update, this.#film);
+        } catch(err) {
+          this.#commentBlockPresenter.setViewState(CommentBlockPresenterViewState.ABORTING);
+        }
         break;
       case UserAction.DELETE_COMMENT:
-        this.#commentBlockPresenter.setDeletingCommentId(update);
-        this.#commentsModel.deleteComment(updateType, this.#commentMap.get(update), this.#film);
+        this.#commentBlockPresenter.setViewState(CommentBlockPresenterViewState.DELETING, update);
+        try {
+          await this.#commentsModel.deleteComment(updateType, this.#commentMap.get(update), this.#film);
+        } catch(err) {
+          this.#commentBlockPresenter.setViewState(CommentBlockPresenterViewState.ABORTING);
+        }
         break;
     }
   }
