@@ -21,7 +21,12 @@ const filterModel = new FilterModel();
 const filmsModel = new FilmsModel(apiService);
 const commentsModel = new CommentsModel(apiService);
 
-const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement, filmsModel, filterModel, commentsModel);
+const initHandler = (films) => {
+  render(siteHeader, new UserRankView(films), RenderPosition.BEFOREEND);
+  render(footerStatisticsElement, new StatisticView(films.length), RenderPosition.BEFOREEND);
+};
+
+const filmBlockPresenter = new FilmBlockPresenter(siteBodyElement, siteMainElement, filmsModel, filterModel, commentsModel, initHandler);
 
 let statisticsElement = null;
 
@@ -40,9 +45,6 @@ const handleMenuClick = (menuType) => {
 };
 
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel, handleMenuClick);
-
-render(siteHeader, new UserRankView(), RenderPosition.BEFOREEND);
-render(footerStatisticsElement, new StatisticView(/*films.length*/30), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 filmBlockPresenter.init();

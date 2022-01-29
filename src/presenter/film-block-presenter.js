@@ -28,10 +28,14 @@ export default class FilmBlockPresenter {
   #filterType = FilterType.ALL;
   #isLoading = true;
 
-  constructor(popupContainer, blockContainer, filmsModel, filterModel, commentsModel) {
+  #initHandler = null;
+
+  constructor(popupContainer, blockContainer, filmsModel, filterModel, commentsModel, initHandler) {
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
     this.#commentsModel = commentsModel;
+
+    this.#initHandler = initHandler;
 
     this.#blockContainer = blockContainer;
     this.#popupComponent = new PopupPresenter(popupContainer, this.#handleViewAction, this.#commentsModel);
@@ -139,6 +143,7 @@ export default class FilmBlockPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
+        this.#initHandler(this.films);
         remove(this.#loadingComponent);
         this.#renderFilmBoard();
         break;
