@@ -33,7 +33,7 @@ export const getGenres = (films) => {
       if (index === -1) {
         genres.push({
           genreName: genre,
-          genreCount: 1
+          genreCount: 1,
         });
       } else {
         genres[index].genreCount++;
