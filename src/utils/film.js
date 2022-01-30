@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
+import {FILM_CARD_DESCRIPTION_MAX} from '../const';
 
 export const capitalizeFirstLetter = (str) => (str[0].toUpperCase() + str.slice(1));
 
@@ -49,4 +50,13 @@ export const sortComment = (filmA, filmB) => {
   }
 
   return 0;
+};
+
+export const trimDescription = (text) => {
+  if (text.length > FILM_CARD_DESCRIPTION_MAX) {
+    const trimedDescription = text.slice(0, FILM_CARD_DESCRIPTION_MAX - 2);
+    const description = trimedDescription.concat('&hellip;');
+    return description;
+  }
+  return text;
 };
