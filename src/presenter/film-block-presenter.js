@@ -28,10 +28,14 @@ export default class FilmBlockPresenter {
   #filterType = FilterType.ALL;
   #isLoading = true;
 
-  constructor(popupContainer, blockContainer, filmsModel, filterModel, commentsModel) {
+  #initHandler = null;
+
+  constructor(popupContainer, blockContainer, filmsModel, filterModel, commentsModel, initHandler) {
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
     this.#commentsModel = commentsModel;
+
+    this.#initHandler = initHandler;
 
     this.#blockContainer = blockContainer;
     this.#popupComponent = new PopupPresenter(popupContainer, this.#handleViewAction, this.#commentsModel);
@@ -50,8 +54,7 @@ export default class FilmBlockPresenter {
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-    //this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
-    this.#commentsModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
 
     this.#renderFilmBoard();
   }
@@ -63,8 +66,7 @@ export default class FilmBlockPresenter {
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
-    //this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
-    this.#commentsModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleCommentsModelEvent);
   }
 
   get films() {
@@ -101,8 +103,7 @@ export default class FilmBlockPresenter {
   }
 
   #handleCommentsModelEvent = (updateType, data) => {
-    const update = {...data, comments: this.#commentsModel.comments};
-    this.#filmsModel.updateFilm(updateType, update);
+    this.#filmsModel.updateFilmModel(updateType, data);
   }
 
   #updateBoard = (changeSort = false, sortType = SortType.DEFAULT) => {
@@ -126,7 +127,13 @@ export default class FilmBlockPresenter {
         }
         break;
       case UpdateType.MINOR:
-        this.#updateBoard(false);
+        this.#mainFilmList.updateFilm(data);
+
+        this.#topRatedFilmList.destroy();
+        this.#mostCommentedFilmList.destroy();
+        this.#topRatedFilmList.init();
+        this.#mostCommentedFilmList.init();
+
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
           this.#popupComponent.init(data);
         }
@@ -136,6 +143,7 @@ export default class FilmBlockPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
+        this.#initHandler(this.films);
         remove(this.#loadingComponent);
         this.#renderFilmBoard();
         break;

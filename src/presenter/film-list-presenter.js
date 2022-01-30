@@ -2,7 +2,7 @@ import FilmListView from '../view/film-list-view';
 import MoreButtonView from '../view/more-button-view';
 import FilmCardPresenter from './film-card-presenter';
 import {remove, render, RenderPosition} from '../utils/render';
-import {FILM_COUNT_PER_STEP, LIST_EXTRA_FILM_COUNT, SortType} from '../const';
+import {FILM_COUNT_PER_STEP, LIST_EXTRA_FILM_COUNT, SortType, FilterType} from '../const';
 import {sortDate, sortRating, sortComment} from '../utils/film';
 import {filter} from '../utils/filter';
 
@@ -36,7 +36,7 @@ export default class FilmListPresenter {
   }
 
   get films() {
-    const filterType = this.#filterModel.filter;
+    const filterType = (this.#isFilmListExtra) ? FilterType.ALL : this.#filterModel.filter;
     const films = this.#filmsModel.films;
     const filteredFilms = filter[filterType](films);
 

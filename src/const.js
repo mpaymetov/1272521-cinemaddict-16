@@ -4,6 +4,9 @@ export const LIST_EXTRA_FILM_COUNT = 2;
 export const AUTHORIZATION = 'Basic HLh6aRHkt7VyL6fn';
 export const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
 
+export const SHAKE_ANIMATION_TIMEOUT = 600;
+export const FILM_CARD_DESCRIPTION_MAX = 140;
+
 export const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
