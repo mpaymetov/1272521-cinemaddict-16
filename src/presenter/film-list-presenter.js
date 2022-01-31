@@ -53,6 +53,16 @@ export default class FilmListPresenter {
   }
 
   init = (isResetRenderedFilmCount = true) => {
+    const isAllFilmsWithoutRating = this.films.every((film) => film.totalRating === 0);
+    const isAllFilmsWithoutComment = this.films.every((film) => film.comments.length === 0);
+
+    if (this.#isFilmListExtra && this.#filmsSortType === SortType.RATING && isAllFilmsWithoutRating) {
+      return;
+    }
+    if (this.#isFilmListExtra && this.#filmsSortType === SortType.COMMENT && isAllFilmsWithoutComment) {
+      return;
+    }
+
     if (isResetRenderedFilmCount) {
       this.#renderedFilmCount = this.#filmCountPerStep;
     }

@@ -44,11 +44,11 @@ export default class FilmBlockPresenter {
 
     this.#filmBlockElement = new FilmBlockView();
     this.#mainFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'All movies. Upcoming', false,
-      this.#handleViewAction, this.#mainListSortType, this.#filmsModel,this.#filterModel, this.#commentsModel);
+      this.#handleViewAction, this.#mainListSortType, this.#filmsModel,this.#filterModel);
     this.#topRatedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Top rated', true,
-      this.#handleViewAction, SortType.RATING, this.#filmsModel, this.#filterModel, this.#commentsModel);
+      this.#handleViewAction, SortType.RATING, this.#filmsModel, this.#filterModel);
     this.#mostCommentedFilmList = new FilmListPresenter(this.#filmBlockElement, this.#popupComponent, 'Most commented', true,
-      this.#handleViewAction, SortType.COMMENT, this.#filmsModel, this.#filterModel, this.#commentsModel);
+      this.#handleViewAction, SortType.COMMENT, this.#filmsModel, this.#filterModel);
   }
 
   init = () => {
