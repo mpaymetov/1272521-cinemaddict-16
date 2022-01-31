@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 import {FILM_CARD_DESCRIPTION_MAX} from '../const';
 
 export const capitalizeFirstLetter = (str) => (str[0].toUpperCase() + str.slice(1));
@@ -9,7 +11,7 @@ export const getReleaseDate = (date) => dayjs(date).format('D MMMM YYYY');
 
 export const getReleaseYear = (date) => dayjs(date).format('YYYY');
 
-export const getCommentDate = (date) => dayjs(date).format('YYYY/M/D H:mm');
+export const getCommentDate = (date) => dayjs(date).fromNow();
 
 export const getDurationString = (minutes) => {
   if (minutes < 60) {
