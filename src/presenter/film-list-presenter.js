@@ -52,17 +52,15 @@ export default class FilmListPresenter {
     return filteredFilms;
   }
 
-  init = () => {
+  init = (isResetRenderedFilmCount = true) => {
+    if (isResetRenderedFilmCount) {
+      this.#renderedFilmCount = this.#filmCountPerStep;
+    }
+
     this.#filmListElement = new FilmListView(this.#filmListTitle, this.#isFilmListExtra);
     render(this.#filmBlockElement, this.#filmListElement, RenderPosition.BEFOREEND);
 
     this.#renderFilmList();
-  }
-
-  updateFilm = (updatedFilm) => {
-    if (this.#filmPresenter.get(updatedFilm.id)) {
-      this.#filmPresenter.get(updatedFilm.id).init(updatedFilm);
-    }
   }
 
   changeSortType = (sortType) => {
@@ -95,7 +93,6 @@ export default class FilmListPresenter {
   }
 
   #renderMoreButton = () => {
-    this.#renderedFilmCount = this.#filmCountPerStep;
     this.#moreButtonComponent = new MoreButtonView();
     render(this.#filmListElement, this.#moreButtonComponent, RenderPosition.BEFOREEND);
     this.#moreButtonComponent.setClickHandler(this.#handleMoreButtonClick);
@@ -115,9 +112,9 @@ export default class FilmListPresenter {
 
   #renderFilmList = () => {
     this.#filmListContainer = this.#filmListElement.element.querySelector('.films-list__container');
-    this.#renderFilms(0, Math.min(this.films.length, this.#filmCountPerStep));
+    this.#renderFilms(0, Math.min(this.films.length, this.#renderedFilmCount));
 
-    if (this.films.length > this.#filmCountPerStep && !this.#isFilmListExtra) {
+    if (this.films.length > this.#renderedFilmCount && !this.#isFilmListExtra) {
       this.#renderMoreButton();
     }
   }

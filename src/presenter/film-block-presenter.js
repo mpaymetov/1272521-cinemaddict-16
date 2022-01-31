@@ -56,7 +56,7 @@ export default class FilmBlockPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleCommentsModelEvent);
 
-    this.#renderFilmBoard();
+    this.#renderFilmBoard(true);
   }
 
   destroy = () => {
@@ -82,7 +82,7 @@ export default class FilmBlockPresenter {
       return;
     }
 
-    this.#updateBoard(true, sortType);
+    this.#updateBoard(true, true, sortType);
   }
 
   #renderSort = () => {
@@ -106,13 +106,13 @@ export default class FilmBlockPresenter {
     this.#filmsModel.updateFilmModel(updateType, data);
   }
 
-  #updateBoard = (changeSort = false, sortType = SortType.DEFAULT) => {
+  #updateBoard = (isResetRenderedFilmCount = true, changeSort = false, sortType = SortType.DEFAULT) => {
     if (changeSort) {
       this.#mainListSortType = sortType;
       this.#mainFilmList.changeSortType(sortType);
     }
     this.#clearFilmBoard();
-    this.#renderFilmBoard();
+    this.#renderFilmBoard(isResetRenderedFilmCount);
   }
 
   #renderLoading = () => {
@@ -127,25 +127,19 @@ export default class FilmBlockPresenter {
         }
         break;
       case UpdateType.MINOR:
-        this.#mainFilmList.updateFilm(data);
-
-        this.#topRatedFilmList.destroy();
-        this.#mostCommentedFilmList.destroy();
-        this.#topRatedFilmList.init();
-        this.#mostCommentedFilmList.init();
-
+        this.#updateBoard(false, false, SortType.DEFAULT);
         if (this.#popupComponent.isShow() && (data.id === this.#popupComponent.getId())) {
           this.#popupComponent.init(data);
         }
         break;
       case UpdateType.MAJOR:
-        this.#updateBoard(true, SortType.DEFAULT);
+        this.#updateBoard(true, true, SortType.DEFAULT);
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
         this.#initHandler(this.films);
         remove(this.#loadingComponent);
-        this.#renderFilmBoard();
+        this.#renderFilmBoard(true);
         break;
     }
   }
@@ -165,7 +159,7 @@ export default class FilmBlockPresenter {
     remove(this.#loadingComponent);
   }
 
-  #renderFilmBoard = () => {
+  #renderFilmBoard = (isResetRenderedFilmCount) => {
     if (this.#isLoading) {
       this.#renderLoading();
       return;
@@ -180,8 +174,8 @@ export default class FilmBlockPresenter {
 
     render(this.#blockContainer, this.#filmBlockElement, RenderPosition.BEFOREEND);
 
-    this.#mainFilmList.init();
-    this.#topRatedFilmList.init();
-    this.#mostCommentedFilmList.init();
+    this.#mainFilmList.init(isResetRenderedFilmCount);
+    this.#topRatedFilmList.init(isResetRenderedFilmCount);
+    this.#mostCommentedFilmList.init(isResetRenderedFilmCount);
   }
 }
