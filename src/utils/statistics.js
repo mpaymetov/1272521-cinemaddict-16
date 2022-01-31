@@ -12,9 +12,8 @@ export const getUserRank = (filmsCount) => {
     return 'Fan';
   } else if (filmsCount > 0) {
     return 'Novice';
-  } else {
-    return '';
   }
+  return '';
 };
 
 export const getFilmsDurations = (films) => {
